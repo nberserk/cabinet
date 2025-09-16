@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom component styles */
+@layer components {
+  /* Tree visualization components */
+  .tree-node {
+    @apply flex items-center py-1 relative cursor-pointer;
+  }
+
+  .tree-content {
+    @apply flex items-center px-2 py-1 rounded flex-1 transition-colors;
+  }
+
+  .tree-content:hover {
+    @apply bg-gray-100;
+  }
+
+  .tree-node.active .tree-content {
+    @apply bg-blue-100 border-l-2 border-blue-500;
+  }
+
+  .tree-node.restricted .tree-content {
+    @apply opacity-60 bg-gray-50 cursor-default;
+  }
+
+  .tree-node.restricted .tab-title {
+    @apply italic text-gray-500;
+  }
+
+  .tree-node.pinned .tree-content {
+    @apply bg-yellow-100 border-l-2 border-yellow-500;
+  }
+
+  .tree-node.loading .tree-content {
+    @apply bg-gray-100;
+  }
+
+  /* Tree lines */
+  .tree-line {
+    @apply w-4 h-5 relative flex-shrink-0;
+  }
+
+  .tree-line.has-vertical::before {
+    content: '';
+    @apply absolute border-l border-gray-300 h-full left-2 top-0;
+  }
+
+  .tree-line.has-branch::after {
+    content: '';
+    @apply absolute border-t border-gray-300 w-2 top-2.5 left-2;
+  }
+
+  .tree-line.has-branch::before {
+    content: '';
+    @apply absolute border-l border-gray-300 h-2.5 left-2 top-0;
+  }
+
+  .tree-line.last-child::before {
+    @apply h-2.5;
+  }
+
+  /* Tab elements */
+  .tab-favicon {
+    @apply w-4 h-4 mr-1.5 flex-shrink-0;
+  }
+
+  .tab-title {
+    @apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-700;
+  }
+
+  .tab-indicators {
+    @apply flex items-center ml-1;
+  }
+
+  .tab-close {
+    @apply w-4 h-4 border-none bg-red-500 text-white rounded-full text-xs leading-none cursor-pointer ml-1 opacity-70 hover:opacity-100 hover:bg-red-600 transition-all;
+  }
+
+  /* Loading indicator */
+  .loading-indicator {
+    @apply w-3 h-3 border-2 border-gray-200 border-t-blue-500 rounded-full animate-spin;
+  }
+
+  /* Pinned indicator */
+  .pinned-indicator {
+    @apply w-2 h-2 bg-yellow-500 rounded-full ml-1;
+  }
+
+  /* Context menu */
+  .context-menu {
+    @apply bg-white border border-gray-200 rounded-md shadow-lg py-1 z-50 min-w-32;
+  }
+
+  .context-menu-item {
+    @apply px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-100;
+  }
+
+  .context-menu-item.disabled {
+    @apply text-gray-400 cursor-not-allowed hover:bg-transparent;
+  }
+
+  /* Cabinet management specific styles */
+  .cabinet-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer;
+  }
+
+  .cabinet-card:hover {
+    @apply transform -translate-y-0.5;
+  }
+
+  .cabinet-card.selected {
+    @apply border-blue-500 ring-2 ring-blue-500;
+  }
+
+  .restore-btn {
+    @apply px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors;
+  }
+
+  .restore-btn:hover {
+    @apply transform scale-105;
+  }
+
+  .more-btn {
+    @apply p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.context-menu {
+  animation: fadeIn 0.15s ease-out;
+}
+
+.modal-content {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cabinet-card {
+    @apply p-4;
+  }
+  
+  .cabinet-card .flex {
+    @apply flex-col items-start gap-4;
+  }
+  
+  .cabinet-card .actions {
+    @apply self-stretch justify-end;
+  }
+}

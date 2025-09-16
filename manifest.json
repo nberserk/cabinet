@@ -1,16 +1,20 @@
 {
-  "manifest_version": 3,
-  "name": "Tree Tabs",
-  "version": "1.0",
-  "description": "Hierarchical tab management",
-  "permissions": ["tabs", "sidePanel"],
-  "side_panel": {
-    "default_path": "sidepanel.html"
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_title": "Open Tree Tabs"
-  }
+    "manifest_version": 3,
+    "name": "The Cabinet",
+    "version": "1.0",
+    "description": "Chrome extension to manage tabs in a tree structure.",
+    "permissions": [
+        "tabs",
+        "storage",
+        "sidePanel"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_title": "Open Tab Hierarchy"
+    },
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    }
 }
