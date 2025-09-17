@@ -137,15 +137,44 @@
   - Create unit tests for Cabinet page HTML structure
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 8.2 Implement Cabinet management JavaScript functionality
+- [x] 8.2 Implement Cabinet management JavaScript functionality
   - Code Cabinet CRUD operations (save, load, rename, delete)
-  - Implement Cabinet preview generation and display
+  - Implement enhanced Cabinet preview generation with hierarchical tab display
   - Write Cabinet restoration with confirmation dialogs
   - Add Cabinet search and filtering functionality
   - Write bulk Cabinet operations (export, import, cleanup)
   - Add storage usage monitoring and management
   - Create integration tests for complete Cabinet management workflows
-  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 7.2, 7.4, 7.5_
+  - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6_
+
+- [x] 8.3 Enhance Cabinet preview with compact tab hierarchy visualization
+  - ✅ Implement renderTabNodeInPreview() method for space-efficient hierarchical tab display
+  - ✅ Add minimal tree line visualization with simple lines and compact spacing
+  - ✅ Code compact tab metadata display (small favicon, title, domain-only URL, dot indicators)
+  - ✅ Implement responsive design optimized for maximum information density
+  - ✅ Add subtle hover effects with left border highlights
+  - ✅ Write efficient rendering for large Cabinet previews with minimal visual overhead
+  - ✅ Create integration tests for compact Cabinet preview rendering functionality
+  - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 9.5_
+
+- [x] 8.4 Apply Option 1 (Compact) design to Cabinet management system
+  - ✅ Update requirements to reflect compact design specifications
+  - ✅ Modify design document to include compact preview details
+  - ✅ Implement compact CSS styling with reduced spacing and sizing
+  - ✅ Update JavaScript rendering to use domain-only URLs and small indicators
+  - ✅ Create test page demonstrating compact implementation
+  - ✅ Write comprehensive integration tests for compact functionality
+  - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 9.5_
+
+- [x] 8.5 Implement always-visible Cabinet details without toggle buttons
+  - ✅ Remove expand/collapse button functionality from Cabinet cards
+  - ✅ Modify loadCabinetPreview() to automatically load and display all Cabinet details on page load
+  - ✅ Update renderCabinetList() to show detailed previews immediately for all Cabinets
+  - ✅ Implement loadAllCabinetPreviews() method to batch-load all Cabinet data efficiently
+  - ✅ Update CSS to accommodate always-visible previews with appropriate spacing
+  - ✅ Optimize performance for displaying multiple detailed Cabinet previews simultaneously
+  - ✅ Create test page demonstrating always-visible Cabinet preview functionality
+  - _Requirements: 7.2, 7.3, 8.1, 8.8_
 
 - [ ] 9. Add error handling and edge cases
 - [ ] 9.1 Implement tab access error handling

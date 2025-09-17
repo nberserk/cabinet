@@ -83,12 +83,28 @@ This feature will create a Chrome extension that provides a visual representatio
 #### Acceptance Criteria
 
 1. WHEN viewing saved Cabinets THEN the system SHALL display Cabinet names, creation dates, and number of tabs
-2. WHEN the user selects a Cabinet THEN the system SHALL show a preview of the tabs it contains
-3. WHEN the user wants to delete a Cabinet THEN the system SHALL remove it from storage after confirmation
-4. WHEN the user wants to rename a Cabinet THEN the system SHALL allow editing the Cabinet name
-5. WHEN a Cabinet contains tabs that no longer exist THEN the system SHALL handle broken links gracefully during restoration
+2. WHEN viewing saved Cabinets THEN the system SHALL automatically show a detailed preview of the tabs each Cabinet contains with their hierarchical structure
+3. WHEN viewing a Cabinet preview THEN the system SHALL display each tab with its favicon, title, URL, and hierarchical relationships without requiring user interaction
+4. WHEN the user wants to delete a Cabinet THEN the system SHALL remove it from storage after confirmation
+5. WHEN the user wants to rename a Cabinet THEN the system SHALL allow editing the Cabinet name
+6. WHEN a Cabinet contains tabs that no longer exist THEN the system SHALL handle broken links gracefully during restoration
 
 ### Requirement 8
+
+**User Story:** As a user reviewing saved Cabinets, I want to see detailed information about each Cabinet's tab structure in a compact format immediately upon viewing the Cabinet list, so that I can quickly understand what tabs will be restored without additional clicks or interactions.
+
+#### Acceptance Criteria
+
+1. WHEN viewing the Cabinet list THEN the system SHALL automatically display tabs in their original hierarchical tree structure using a compact layout for each Cabinet
+2. WHEN viewing Cabinet tabs THEN the system SHALL show small favicons (12px), titles, and domain-only URLs for space efficiency
+3. WHEN viewing Cabinet tabs THEN the system SHALL visually indicate parent-child relationships with minimal tree lines
+4. WHEN viewing Cabinet tabs THEN the system SHALL show tab metadata using small dot indicators for pinned and loading states
+5. WHEN a Cabinet has many tabs THEN the system SHALL provide scrollable preview optimized for viewing maximum tabs in minimal space
+6. WHEN Cabinet tabs have long titles THEN the system SHALL truncate them with tooltips, prioritizing space efficiency over full text display
+7. WHEN hovering over tab nodes THEN the system SHALL provide subtle visual feedback with left border highlights
+8. WHEN the Cabinet list loads THEN the system SHALL display all Cabinet details immediately without requiring expand/collapse interactions
+
+### Requirement 9
 
 **User Story:** As a user concerned about performance, I want the extension to work efficiently, so that it doesn't slow down my browser or consume excessive resources.
 
@@ -98,3 +114,4 @@ This feature will create a Chrome extension that provides a visual representatio
 2. WHEN there are many tabs open THEN the system SHALL handle large numbers of tabs without performance degradation
 3. WHEN tabs change frequently THEN the system SHALL efficiently update the hierarchy without causing browser lag
 4. WHEN the extension is not actively being used THEN the system SHALL minimize background processing
+5. WHEN rendering Cabinet previews with many tabs THEN the system SHALL use efficient rendering techniques to maintain smooth performance

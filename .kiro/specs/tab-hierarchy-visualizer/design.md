@@ -158,11 +158,21 @@ graph TD
 
 **Key Features**:
 - Cabinet list display with metadata (name, creation date, tab count)
-- Cabinet preview showing contained tabs and hierarchy structure
+- Always-visible enhanced Cabinet preview showing detailed tab hierarchy with visual tree structure
 - Cabinet operations (save, restore, rename, delete)
 - Search and filtering capabilities
 - Bulk operations (export, import, cleanup)
 - Storage usage monitoring and management
+
+**Always-Visible Cabinet Preview (Compact Design)**:
+- **Immediate Display**: Cabinet details are shown automatically without requiring user interaction
+- **Space-Efficient Layout**: Compact hierarchical display optimized for viewing many tabs in minimal space
+- **Minimal Visual Elements**: Small favicons (12px), simple tree lines, and subtle spacing for maximum information density
+- **Domain-Only URLs**: Shows only domain names instead of full URLs to save space while maintaining context
+- **Dot Indicators**: Small circular indicators for pinned (blue) and loading (amber) states
+- **Subtle Interactions**: Minimal hover effects with left border highlights to maintain clean aesthetic
+- **Optimized Scrolling**: Efficient scrolling for large Cabinet previews with minimal visual overhead
+- **No Toggle Required**: Eliminates the need for expand/collapse buttons, providing immediate access to Cabinet contents
 
 **Navigation**:
 - Accessible from side panel via "Cabinets" button
@@ -170,12 +180,14 @@ graph TD
 - Breadcrumb navigation back to tab hierarchy
 
 **Key Methods**:
-- `renderCabinetList()`: Displays all saved Cabinets with metadata
-- `showCabinetPreview(cabinetId)`: Shows detailed Cabinet contents
+- `renderCabinetList()`: Displays all saved Cabinets with metadata and automatically loads detailed previews
+- `renderCabinetPreview(cabinetId)`: Shows compact Cabinet contents with space-efficient hierarchical tab structure
+- `renderTabNodeInPreview(tab, level, isLast, ancestorLines)`: Renders individual tab with minimal tree visualization and compact layout
 - `handleCabinetRestore(cabinetId)`: Restores Cabinet with confirmation
 - `handleCabinetDelete(cabinetId)`: Deletes Cabinet with confirmation
 - `handleCabinetRename(cabinetId, newName)`: Renames Cabinet
 - `showSaveCabinetDialog()`: Opens dialog to save current hierarchy
+- `loadAllCabinetPreviews()`: Automatically loads and displays all Cabinet preview data on page load
 
 ### Event Handler
 

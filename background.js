@@ -694,6 +694,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           await handleGetCabinetPreview(message, sender, sendResponse);
           break;
           
+        case 'GET_CABINET':
+          await handleGetCabinet(message, sender, sendResponse);
+          break;
+          
         case 'DUPLICATE_CABINET':
           await handleDuplicateCabinet(message, sender, sendResponse);
           break;
@@ -1252,6 +1256,33 @@ async function handleGetCabinetPreview(message, sender, sendResponse) {
     
   } catch (error) {
     console.error('❌ Error getting cabinet preview:', error);
+    sendResponse({ success: false, error: error.message });
+  }
+}
+
+async function handleGetCabinet(message, sender, sendResponse) {
+  try {
+    const { cabinetId } = message;
+    
+    if (!cabinetId) {
+      sendResponse({ success: false, error: 'Cabinet ID required' });
+      return;
+    }
+    
+    const result = await chrome.storage.local.get('tab_hierarchy_cabinets');
+    const cabinets = result.tab_hierarchy_cabinets || [];
+    const cabinet = cabinets.find(c => c.id === cabinetId);
+    
+    if (!cabinet) {
+      sendResponse({ success: false, error: 'Cabinet not found' });
+      return;
+    }
+    
+    // Return full cabinet data including all tabs
+    sendResponse({ success: true, data: cabinet });
+    
+  } catch (error) {
+    console.error('❌ Error getting cabinet:', error);
     sendResponse({ success: false, error: error.message });
   }
 }

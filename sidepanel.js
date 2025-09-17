@@ -235,6 +235,7 @@ function renderTabNode(container, tabNode, depth, isLast = false, ancestorLines 
   const tabElement = document.createElement('div');
   tabElement.className = 'tree-node';
   tabElement.setAttribute('data-tab-id', tabNode.id);
+  tabElement.setAttribute('data-level', depth); // Add level for gradient styling
   tabElement.setAttribute('role', 'treeitem');
   tabElement.setAttribute('aria-level', depth + 1);
   tabElement.setAttribute('aria-expanded', tabNode.children.length > 0 ? 'true' : 'false');
@@ -249,30 +250,8 @@ function renderTabNode(container, tabNode, depth, isLast = false, ancestorLines 
     tabElement.setAttribute('aria-disabled', 'true');
   }
   
-  // Add tree lines for each depth level
-  for (let i = 0; i < depth; i++) {
-    const treeLine = document.createElement('div');
-    treeLine.className = 'tree-line';
-    treeLine.setAttribute('aria-hidden', 'true');
-    
-    // Show vertical line if ancestor at this level has more siblings
-    if (i < ancestorLines.length && ancestorLines[i]) {
-      treeLine.classList.add('has-vertical');
-    }
-    
-    tabElement.appendChild(treeLine);
-  }
-  
-  // Add the connection line for current tab (if not root)
-  if (depth > 0) {
-    const connectionLine = document.createElement('div');
-    connectionLine.className = 'tree-line has-branch';
-    connectionLine.setAttribute('aria-hidden', 'true');
-    if (isLast) {
-      connectionLine.classList.add('last-child');
-    }
-    tabElement.appendChild(connectionLine);
-  }
+  // Tree lines are handled by CSS gradients in Option 3
+  // No need to create tree line elements
   
   // Tab content wrapper
   const tabContent = document.createElement('div');

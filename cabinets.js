@@ -91,8 +91,8 @@ async function loadCabinets() {
         if (response?.success) {
             cabinets = response.data || [];
             filteredCabinets = [...cabinets];
-            renderCabinets();
-            console.log('📋 Loaded', cabinets.length, 'cabinets');
+            await renderCabinets(); // Now async to handle preview loading
+            console.log('📋 Loaded', cabinets.length, 'cabinets with detailed previews');
         } else {
             throw new Error(response?.error || 'Failed to load cabinets');
         }
@@ -127,8 +127,8 @@ async function updateStorageInfo() {
     }
 }
 
-// Render cabinet list
-function renderCabinets() {
+// Render cabinet list with always-visible details
+async function renderCabinets() {
     const container = elements['cabinet-list'];
     container.innerHTML = '';
     
@@ -147,16 +147,20 @@ function renderCabinets() {
     
     hideEmptyState();
     
+    // Create all cabinet cards first
     filteredCabinets.forEach(cabinet => {
         const cabinetCard = createCabinetCard(cabinet);
         container.appendChild(cabinetCard);
     });
+    
+    // Then load all previews automatically
+    await loadAllCabinetPreviews();
 }
 
 // Create cabinet card element
 function createCabinetCard(cabinet) {
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer';
+    card.className = 'cabinet-card bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer';
     card.dataset.cabinetId = cabinet.id;
     
     const createdDate = new Date(cabinet.createdAt).toLocaleDateString();
@@ -218,13 +222,12 @@ function createCabinetCard(cabinet) {
         showContextMenu(e, cabinet);
     });
     
-    // Load preview
-    loadCabinetPreview(cabinet.id);
+    // Preview will be loaded automatically by loadAllCabinetPreviews()
     
     return card;
 }
 
-// Load cabinet preview
+// Load cabinet preview with always-visible details
 async function loadCabinetPreview(cabinetId) {
     try {
         const response = await chrome.runtime.sendMessage({
@@ -238,10 +241,20 @@ async function loadCabinetPreview(cabinetId) {
             
             if (previewElement && preview.tabSummary) {
                 const { totalTabs, rootTabs, maxDepth, domains } = preview.tabSummary;
+                
+                // Create always-visible preview with summary and detailed view
                 previewElement.innerHTML = `
-                    <div>${rootTabs} root tabs, ${maxDepth} levels deep</div>
-                    <div class="text-gray-500 mt-1">Domains: ${domains.slice(0, 3).join(', ')}${domains.length > 3 ? '...' : ''}</div>
+                    <div class="mb-3">
+                        <div class="text-xs text-gray-700">${rootTabs} root tabs, ${maxDepth} levels deep</div>
+                        <div class="text-xs text-gray-500 mt-1">Domains: ${domains.slice(0, 3).join(', ')}${domains.length > 3 ? '...' : ''}</div>
+                    </div>
+                    <div id="detailed-preview-${cabinetId}" class="border-t border-gray-200 pt-3">
+                        <!-- Detailed preview will be loaded here -->
+                    </div>
                 `;
+                
+                // Automatically load detailed preview
+                await loadDetailedPreview(cabinetId);
             }
         }
     } catch (error) {
@@ -253,8 +266,203 @@ async function loadCabinetPreview(cabinetId) {
     }
 }
 
+// Load detailed preview automatically
+async function loadDetailedPreview(cabinetId) {
+    const detailedPreview = document.getElementById(`detailed-preview-${cabinetId}`);
+    
+    if (!detailedPreview) return;
+    
+    try {
+        // Load full cabinet data
+        const response = await chrome.runtime.sendMessage({
+            type: 'GET_CABINET',
+            cabinetId: cabinetId
+        });
+        
+        if (response?.success && response.data) {
+            const cabinet = response.data;
+            renderDetailedCabinetPreview(detailedPreview, cabinet.tabs);
+        } else {
+            detailedPreview.innerHTML = '<div class="text-red-600 text-xs">Failed to load cabinet details</div>';
+        }
+    } catch (error) {
+        console.error('Error loading detailed preview:', error);
+        detailedPreview.innerHTML = '<div class="text-red-600 text-xs">Error loading details</div>';
+    }
+}
+
+// Load all cabinet previews efficiently
+async function loadAllCabinetPreviews() {
+    const cabinetCards = document.querySelectorAll('[data-cabinet-id]');
+    const loadPromises = [];
+    
+    cabinetCards.forEach(card => {
+        const cabinetId = card.dataset.cabinetId;
+        if (cabinetId) {
+            loadPromises.push(loadCabinetPreview(cabinetId));
+        }
+    });
+    
+    // Load all previews in parallel for better performance
+    try {
+        await Promise.all(loadPromises);
+        console.log('✅ All cabinet previews loaded');
+    } catch (error) {
+        console.error('❌ Error loading some cabinet previews:', error);
+    }
+}
+
+// Render detailed cabinet preview with hierarchical structure
+function renderDetailedCabinetPreview(container, tabs) {
+    if (!tabs || tabs.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 text-xs">No tabs in this cabinet</div>';
+        return;
+    }
+    
+    // Build hierarchy from flat tab array
+    const tabMap = new Map();
+    const rootTabs = [];
+    
+    // First pass: create tab map
+    tabs.forEach(tab => {
+        tabMap.set(tab.id, { ...tab, children: [] });
+    });
+    
+    // Second pass: build parent-child relationships
+    tabs.forEach(tab => {
+        const tabNode = tabMap.get(tab.id);
+        if (tab.parentId && tabMap.has(tab.parentId)) {
+            const parent = tabMap.get(tab.parentId);
+            parent.children.push(tabNode);
+        } else {
+            rootTabs.push(tabNode);
+        }
+    });
+    
+    // Create compact preview container
+    const previewContainer = document.createElement('div');
+    previewContainer.className = 'cabinet-preview-tree compact max-h-48 overflow-y-auto';
+    
+    // Render root tabs
+    rootTabs.forEach((tab, index) => {
+        const isLast = index === rootTabs.length - 1;
+        renderTabNodeInPreview(previewContainer, tab, 0, isLast, []);
+    });
+    
+    container.innerHTML = '';
+    container.appendChild(previewContainer);
+}
+
+// Render individual tab node in preview with compact tree structure
+function renderTabNodeInPreview(container, tabNode, depth, isLast = false, ancestorLines = []) {
+    if (!tabNode || !tabNode.id) return;
+    
+    // Ensure children array exists
+    if (!tabNode.children) {
+        tabNode.children = [];
+    }
+    
+    // Create tab element with compact styling
+    const tabElement = document.createElement('div');
+    tabElement.className = 'compact-tab-node flex items-center py-1 text-xs';
+    tabElement.setAttribute('data-level', depth);
+    
+    // Compact tree lines container
+    const treeLinesContainer = document.createElement('div');
+    treeLinesContainer.className = 'flex items-center mr-2 flex-shrink-0';
+    treeLinesContainer.style.width = `${depth * 8 + 8}px`; // Reduced spacing
+    
+    // Add ancestor lines (minimal)
+    for (let i = 0; i < depth; i++) {
+        const line = document.createElement('div');
+        line.className = 'w-2 h-4 flex items-center justify-center';
+        if (ancestorLines[i]) {
+            line.innerHTML = '<div class="compact-tree-line h-4"></div>';
+        }
+        treeLinesContainer.appendChild(line);
+    }
+    
+    // Add current level connector (minimal)
+    if (depth > 0) {
+        const connector = document.createElement('div');
+        connector.className = 'w-2 h-px bg-gray-300 mr-1';
+        treeLinesContainer.appendChild(connector);
+    }
+    
+    tabElement.appendChild(treeLinesContainer);
+    
+    // Compact favicon
+    const favicon = document.createElement('img');
+    favicon.className = 'compact-favicon';
+    favicon.src = tabNode.favicon || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="%23ddd"/></svg>';
+    favicon.alt = '';
+    favicon.onerror = () => {
+        favicon.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="%23ddd"/></svg>';
+    };
+    tabElement.appendChild(favicon);
+    
+    // Tab info container (compact)
+    const tabInfo = document.createElement('div');
+    tabInfo.className = 'flex-1 min-w-0';
+    
+    // Title (compact)
+    const title = document.createElement('div');
+    title.className = 'font-medium text-gray-900 truncate';
+    title.textContent = tabNode.title || 'Untitled';
+    title.title = tabNode.title || 'Untitled';
+    tabInfo.appendChild(title);
+    
+    // Domain-only URL (compact)
+    if (tabNode.url) {
+        const url = document.createElement('div');
+        url.className = 'text-gray-500 truncate text-xs';
+        try {
+            const domain = new URL(tabNode.url).hostname;
+            url.textContent = domain;
+        } catch {
+            url.textContent = tabNode.url;
+        }
+        url.title = tabNode.url; // Full URL in tooltip
+        tabInfo.appendChild(url);
+    }
+    
+    tabElement.appendChild(tabInfo);
+    
+    // Compact indicators (small dots)
+    const indicators = document.createElement('div');
+    indicators.className = 'flex items-center space-x-1 ml-2 flex-shrink-0';
+    
+    if (tabNode.isPinned) {
+        const pinnedIcon = document.createElement('div');
+        pinnedIcon.className = 'w-2 h-2 bg-blue-500 rounded-full';
+        pinnedIcon.title = 'Pinned tab';
+        indicators.appendChild(pinnedIcon);
+    }
+    
+    if (tabNode.isLoading) {
+        const loadingIcon = document.createElement('div');
+        loadingIcon.className = 'w-2 h-2 bg-amber-500 rounded-full animate-pulse';
+        loadingIcon.title = 'Was loading when saved';
+        indicators.appendChild(loadingIcon);
+    }
+    
+    tabElement.appendChild(indicators);
+    container.appendChild(tabElement);
+    
+    // Render children
+    if (tabNode.children && tabNode.children.length > 0) {
+        const newAncestorLines = [...ancestorLines];
+        newAncestorLines[depth] = !isLast;
+        
+        tabNode.children.forEach((child, index) => {
+            const isLastChild = index === tabNode.children.length - 1;
+            renderTabNodeInPreview(container, child, depth + 1, isLastChild, newAncestorLines);
+        });
+    }
+}
+
 // Handle search
-function handleSearch() {
+async function handleSearch() {
     const query = elements['search-cabinets'].value.toLowerCase().trim();
     
     if (!query) {
@@ -265,11 +473,11 @@ function handleSearch() {
         );
     }
     
-    handleSort();
+    await handleSort();
 }
 
 // Handle sort
-function handleSort() {
+async function handleSort() {
     const sortBy = elements['sort-cabinets'].value;
     
     filteredCabinets.sort((a, b) => {
@@ -287,7 +495,7 @@ function handleSort() {
         }
     });
     
-    renderCabinets();
+    await renderCabinets();
 }
 
 // Show save cabinet modal
