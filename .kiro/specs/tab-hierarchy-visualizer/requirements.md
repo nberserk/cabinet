@@ -42,14 +42,17 @@ This feature will create a Chrome extension that provides a visual representatio
 
 ### Requirement 4
 
-**User Story:** As a user who wants quick access to the tab hierarchy, I want the extension to be easily accessible, so that I can view and manage tabs without disrupting my workflow.
+**User Story:** As a user who wants quick access to the tab hierarchy, I want the extension to be easily accessible and toggleable, so that I can view and manage tabs without disrupting my workflow.
 
 #### Acceptance Criteria
 
-1. WHEN the user clicks the extension icon THEN the system SHALL open the tab hierarchy in a side panel
-2. WHEN the extension is opened THEN the system SHALL load and display the current tab state within 500ms
-3. WHEN the user uses a keyboard shortcut THEN the system SHALL toggle the side panel visibility
-4. WHEN the extension is open THEN the system SHALL automatically update the hierarchy when tabs change
+1. WHEN the user clicks the extension icon in the toolbar THEN the system SHALL open the tab hierarchy in a side panel
+2. WHEN the user clicks the extension icon again while the side panel is open THEN the system SHALL close the side panel
+3. WHEN the extension toggles between open and closed states THEN the system SHALL maintain the correct state per browser window
+4. WHEN the extension is opened THEN the system SHALL load and display the current tab state within 500ms
+5. WHEN the extension is open THEN the system SHALL automatically update the hierarchy when tabs change
+6. WHEN the user manually closes the side panel THEN the system SHALL update its internal state to reflect the closed status
+7. WHEN the user opens a new browser window THEN the system SHALL treat each window's side panel state independently
 
 ### Requirement 5
 

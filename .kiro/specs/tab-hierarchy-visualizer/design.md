@@ -11,7 +11,7 @@ The extension utilizes Chrome's Manifest V3 architecture with a side panel inter
 ### Extension Structure
 ```
 ├── manifest.json          # Extension configuration and permissions
-├── background.js          # Service worker for tab event handling
+├── background.js          # Service worker for tab event handling and toolbar actions
 ├── sidepanel.html/js      # Primary interface for tab hierarchy visualization
 ├── cabinets.html/js       # Dedicated Cabinet management page
 ├── tests/                 # All test files organized separately
@@ -29,6 +29,7 @@ The extension utilizes Chrome's Manifest V3 architecture with a side panel inter
 4. **Cabinet System**: Saves/restores tab hierarchies directly to Chrome storage
 5. **Cabinet Management UI**: Dedicated page for managing saved Cabinets
 6. **Event Handler**: Responds to tab changes and user interactions
+7. **Toolbar Action Handler**: Manages side panel toggle functionality and state tracking
 
 ### Data Flow
 
@@ -45,6 +46,12 @@ graph TD
     K --> H[Cabinet System]
     G --> A
     H --> I[Chrome Storage API]
+    L[Toolbar Button] --> M[Action Handler]
+    M --> B
+    M --> N[Side Panel Toggle]
+    N --> E
+    E --> O[State Notifications]
+    O --> B
 ```
 
 ### Terminology Clarification
@@ -189,6 +196,38 @@ graph TD
 - `showSaveCabinetDialog()`: Opens dialog to save current hierarchy
 - `loadAllCabinetPreviews()`: Automatically loads and displays all Cabinet preview data on page load
 
+### Toolbar Action Handler
+
+**Purpose**: Manages extension toolbar button interactions and side panel state
+
+**Key Features**:
+- **Toggle Functionality**: Single click opens/closes side panel
+- **Per-Window State Tracking**: Maintains independent state for each browser window
+- **State Synchronization**: Coordinates between background script and side panel
+- **Graceful Error Handling**: Fallback mechanisms for API failures
+
+**Key Methods**:
+- `handleActionClick(tab)`: Processes toolbar button clicks and toggles side panel
+- `openSidePanel(windowId)`: Opens side panel for specific window
+- `closeSidePanel(windowId)`: Closes side panel using disable/re-enable technique
+- `updateSidePanelState(windowId, isOpen)`: Updates internal state tracking
+- `handleSidePanelOpened(windowId)`: Processes side panel opened notifications
+- `handleSidePanelClosed(windowId)`: Processes side panel closed notifications
+
+**State Management**:
+```javascript
+// Per-window side panel state tracking
+const sidePanelStates = new Map(); // windowId -> boolean (true = open, false = closed)
+```
+
+**Communication Flow**:
+1. User clicks toolbar button → `chrome.action.onClicked` event
+2. Background script checks current state for window
+3. If closed: Opens side panel via `chrome.sidePanel.open()`
+4. If open: Closes via `chrome.sidePanel.setOptions({ enabled: false })`
+5. Side panel notifies background of state changes via messages
+6. Background script updates state tracking accordingly
+
 ### Event Handler
 
 **Purpose**: Responds to Chrome tab events and user interactions
@@ -199,6 +238,8 @@ graph TD
 - `chrome.tabs.onUpdated`: Update tab information
 - `chrome.tabs.onActivated`: Update active tab state
 - `chrome.tabs.onMoved`: Update tab positions
+- `chrome.action.onClicked`: Handle toolbar button clicks for side panel toggle
+- `chrome.windows.onRemoved`: Clean up state when windows are closed
 
 ## Data Models
 
@@ -266,6 +307,16 @@ interface HierarchyState {
 - **Solution**: Skip broken URLs, log errors, show restoration summary
 - **Fallback**: Restore available tabs, report failed URLs to user
 
+### Toolbar Action Errors
+- **Issue**: Side panel API not available or fails
+- **Solution**: Graceful degradation with error logging and user notification
+- **Fallback**: Attempt basic side panel open without window-specific targeting
+
+### State Synchronization Errors
+- **Issue**: Side panel state becomes out of sync with background script
+- **Solution**: Implement state reconciliation on side panel open/close events
+- **Fallback**: Reset state tracking and allow user to manually toggle
+
 ## Testing Strategy
 
 ### Test Organization
@@ -288,12 +339,18 @@ All test files should be organized in a dedicated `tests/` directory structure t
 - Storage operations
 - UI component interactions
 - Cross-component data flow
+- Toolbar action handler and side panel coordination
+- Background script and side panel state synchronization
+- Side panel toggle behavior across different Chrome versions
 
 ### End-to-End Tests
 - Complete tab management workflows
 - Cabinet creation and restoration
 - Multi-tab scenarios
 - Error recovery scenarios
+- Toolbar button toggle functionality
+- Side panel state persistence across browser sessions
+- Multi-window side panel independence
 
 ### Performance Tests
 - Large tab count handling (100+ tabs)

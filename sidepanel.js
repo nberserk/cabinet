@@ -46,6 +46,17 @@ async function init() {
     
     console.log('🚀 Side panel initializing for window:', currentWindowId);
     
+    // Notify background script that side panel is opened
+    try {
+      await chrome.runtime.sendMessage({
+        type: 'SIDE_PANEL_OPENED',
+        windowId: currentWindowId
+      });
+      console.log('📱 Notified background: side panel opened');
+    } catch (notifyError) {
+      console.warn('⚠️ Failed to notify side panel opened:', notifyError);
+    }
+    
     // Get hierarchy state from background script
     let response = null;
     let attempts = 0;
@@ -564,6 +575,21 @@ function openCabinetManagementPage() {
     url: chrome.runtime.getURL('cabinets.html')
   });
 }
+
+// Notify background when side panel is closed
+window.addEventListener('beforeunload', () => {
+  if (currentWindowId) {
+    try {
+      chrome.runtime.sendMessage({
+        type: 'SIDE_PANEL_CLOSED',
+        windowId: currentWindowId
+      });
+      console.log('📱 Notified background: side panel closed');
+    } catch (error) {
+      console.warn('⚠️ Failed to notify side panel closed:', error);
+    }
+  }
+});
 
 // Initialize the side panel when DOM is ready
 if (document.readyState === 'loading') {

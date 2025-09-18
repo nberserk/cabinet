@@ -24,6 +24,9 @@ const STORAGE_KEYS = {
 // Track hierarchy state per window using a more structured approach
 const windowHierarchies = new Map(); // windowId -> HierarchyState
 
+// Track side panel state per window for toggle functionality
+const sidePanelStates = new Map(); // windowId -> boolean (true = open, false = closed)
+
 // Persistence utilities
 async function saveHierarchyState() {
   try {
@@ -206,6 +209,69 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onInstalled.addListener((details) => {
   console.log('🔧 Extension installed/updated:', details.reason);
   setTimeout(initializeExistingTabs, 100); // Small delay to ensure Chrome is ready
+});
+
+// Action click handler - toggles side panel when toolbar button is clicked
+chrome.action.onClicked.addListener(async (tab) => {
+  try {
+    console.log('🖱️ Extension toolbar button clicked for tab:', tab.id, 'in window:', tab.windowId);
+    
+    const windowId = tab.windowId;
+    const isCurrentlyOpen = sidePanelStates.get(windowId) || false;
+    
+    if (isCurrentlyOpen) {
+      // Close side panel by disabling and re-enabling
+      console.log('🔄 Toggling side panel: closing for window:', windowId);
+      
+      try {
+        // Temporarily disable the side panel to close it
+        await chrome.sidePanel.setOptions({
+          enabled: false
+        });
+        
+        // Small delay to ensure it closes
+        setTimeout(async () => {
+          try {
+            // Re-enable it for future use
+            await chrome.sidePanel.setOptions({
+              enabled: true,
+              path: 'sidepanel.html'
+            });
+          } catch (enableError) {
+            console.error('❌ Error re-enabling side panel:', enableError);
+          }
+        }, 100);
+        
+        sidePanelStates.set(windowId, false);
+        console.log('✅ Side panel closed for window:', windowId);
+        
+      } catch (closeError) {
+        console.error('❌ Error closing side panel:', closeError);
+        // If closing fails, just toggle the state
+        sidePanelStates.set(windowId, false);
+      }
+      
+    } else {
+      // Open side panel
+      console.log('🔄 Toggling side panel: opening for window:', windowId);
+      
+      await chrome.sidePanel.open({ windowId: windowId });
+      sidePanelStates.set(windowId, true);
+      console.log('✅ Side panel opened for window:', windowId);
+    }
+    
+  } catch (error) {
+    console.error('❌ Error toggling side panel:', error);
+    
+    // Fallback: just try to open and assume it worked
+    try {
+      await chrome.sidePanel.open({ windowId: tab.windowId });
+      sidePanelStates.set(tab.windowId, true);
+      console.log('✅ Side panel opened (fallback)');
+    } catch (fallbackError) {
+      console.error('❌ Fallback side panel open failed:', fallbackError);
+    }
+  }
 });
 
 // Tab creation event listener
@@ -592,8 +658,24 @@ chrome.tabs.onDetached.addListener(async (tabId, detachInfo) => {
 chrome.windows.onRemoved.addListener((windowId) => {
   console.log('🗑️ Window removed:', windowId);
   windowHierarchies.delete(windowId);
+  sidePanelStates.delete(windowId); // Clean up side panel state
   debouncedSaveHierarchyState();
 });
+
+// Side panel event listeners to track open/close state
+if (chrome.sidePanel && chrome.sidePanel.onPanelOpened) {
+  chrome.sidePanel.onPanelOpened.addListener((windowId) => {
+    console.log('📱 Side panel opened by user for window:', windowId);
+    sidePanelStates.set(windowId, true);
+  });
+}
+
+if (chrome.sidePanel && chrome.sidePanel.onPanelClosed) {
+  chrome.sidePanel.onPanelClosed.addListener((windowId) => {
+    console.log('📱 Side panel closed by user for window:', windowId);
+    sidePanelStates.set(windowId, false);
+  });
+}
 
 // Utility functions
 function isRestrictedTab(tab) {
@@ -700,6 +782,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           
         case 'DUPLICATE_CABINET':
           await handleDuplicateCabinet(message, sender, sendResponse);
+          break;
+          
+        case 'SIDE_PANEL_OPENED':
+          await handleSidePanelOpened(message, sender, sendResponse);
+          break;
+          
+        case 'SIDE_PANEL_CLOSED':
+          await handleSidePanelClosed(message, sender, sendResponse);
           break;
           
         case 'PING':
@@ -1378,6 +1468,39 @@ function createTabSummary(tabs) {
     pinnedTabs,
     domains: Array.from(domains).slice(0, 10) // Limit to first 10 domains
   };
+}
+
+// Side panel state handlers
+async function handleSidePanelOpened(message, sender, sendResponse) {
+  try {
+    const windowId = message.windowId;
+    if (windowId) {
+      console.log('📱 Side panel opened notification for window:', windowId);
+      sidePanelStates.set(windowId, true);
+      sendResponse({ success: true });
+    } else {
+      sendResponse({ success: false, error: 'Window ID required' });
+    }
+  } catch (error) {
+    console.error('❌ Error handling side panel opened:', error);
+    sendResponse({ success: false, error: error.message });
+  }
+}
+
+async function handleSidePanelClosed(message, sender, sendResponse) {
+  try {
+    const windowId = message.windowId;
+    if (windowId) {
+      console.log('📱 Side panel closed notification for window:', windowId);
+      sidePanelStates.set(windowId, false);
+      sendResponse({ success: true });
+    } else {
+      sendResponse({ success: false, error: 'Window ID required' });
+    }
+  } catch (error) {
+    console.error('❌ Error handling side panel closed:', error);
+    sendResponse({ success: false, error: error.message });
+  }
 }
 
 // Initialize tabs when the service worker starts

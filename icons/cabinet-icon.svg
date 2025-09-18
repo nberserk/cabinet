@@ -1,0 +1,40 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cabinetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="drawerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Shadow -->
+  <ellipse cx="64" cy="115" rx="45" ry="8" fill="#000" opacity="0.1"/>
+  
+  <!-- Cabinet body -->
+  <rect x="24" y="20" width="80" height="90" rx="8" ry="8" fill="url(#cabinetGrad)" stroke="#5a67d8" stroke-width="2"/>
+  
+  <!-- Drawers with modern styling -->
+  <rect x="32" y="28" width="64" height="20" rx="4" ry="4" fill="url(#drawerGrad)" stroke="#cbd5e0" stroke-width="1"/>
+  <rect x="32" y="54" width="64" height="20" rx="4" ry="4" fill="url(#drawerGrad)" stroke="#cbd5e0" stroke-width="1"/>
+  <rect x="32" y="80" width="64" height="20" rx="4" ry="4" fill="url(#drawerGrad)" stroke="#cbd5e0" stroke-width="1"/>
+  
+  <!-- Modern handles -->
+  <rect x="84" y="35" width="8" height="6" rx="3" ry="3" fill="#4a5568"/>
+  <rect x="84" y="61" width="8" height="6" rx="3" ry="3" fill="#4a5568"/>
+  <rect x="84" y="87" width="8" height="6" rx="3" ry="3" fill="#4a5568"/>
+  
+  <!-- Tab icons on drawers -->
+  <g fill="#667eea" opacity="0.8">
+    <rect x="36" y="32" width="12" height="12" rx="2" ry="2"/>
+    <rect x="52" y="32" width="12" height="12" rx="2" ry="2"/>
+    <rect x="68" y="32" width="8" height="12" rx="2" ry="2"/>
+    
+    <rect x="36" y="58" width="12" height="12" rx="2" ry="2"/>
+    <rect x="52" y="58" width="8" height="12" rx="2" ry="2"/>
+    
+    <rect x="36" y="84" width="12" height="12" rx="2" ry="2"/>
+  </g>
+</svg>
