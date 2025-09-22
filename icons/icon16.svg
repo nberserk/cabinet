@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Cabinet/Folder shape -->
+  <rect x="1.6" y="3.2" width="12.8" height="11.2" 
+        rx="0.8" fill="url(#gradient)" stroke="#4a5568" stroke-width="1"/>
+  
+  <!-- Cabinet handle/tab -->
+  <rect x="2.4" y="1.6" width="4.8" height="2.4" 
+        rx="0.32" fill="url(#gradient)" stroke="#4a5568" stroke-width="1"/>
+  
+  <!-- Hierarchy lines -->
+  <line x1="4" y1="6.4" x2="12" y2="6.4" 
+        stroke="white" stroke-width="1" opacity="0.8"/>
+  <line x1="4.8" y1="8.8" x2="12" y2="8.8" 
+        stroke="white" stroke-width="1" opacity="0.6"/>
+  <line x1="5.6" y1="11.2" x2="12" y2="11.2" 
+        stroke="white" stroke-width="1" opacity="0.4"/>
+</svg>

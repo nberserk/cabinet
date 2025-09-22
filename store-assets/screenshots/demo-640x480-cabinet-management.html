@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dist/styles.css">
+    <title>The Cabinet - Cabinet Management</title>
+    <style>
+        body {
+            width: 640px;
+            height: 480px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+        .header {
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .save-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .content {
+            height: 430px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .cabinet-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .cabinet-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .cabinet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .cabinet-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 0 0 4px 0;
+        }
+        .cabinet-meta {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .cabinet-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .restore-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .more-btn {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .tab-preview {
+            margin-top: 8px;
+        }
+        .preview-item {
+            display: flex;
+            align-items: center;
+            padding: 2px 0;
+            font-size: 10px;
+            color: #6b7280;
+        }
+        .preview-item.level-1 {
+            padding-left: 12px;
+        }
+        .preview-item.level-2 {
+            padding-left: 24px;
+        }
+        .preview-favicon {
+            width: 8px;
+            height: 8px;
+            margin-right: 6px;
+            border-radius: 1px;
+            background: #e5e7eb;
+        }
+        .github { background: #24292e; }
+        .stackoverflow { background: #f48024; }
+        .mdn { background: #83cd29; }
+        .figma { background: #f24e1e; }
+        .react { background: #61dafb; }
+        .tailwind { background: #06b6d4; }
+        .preview-text {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .tree-line {
+            width: 8px;
+            height: 1px;
+            background: #d1d5db;
+            margin-right: 4px;
+        }
+        .pinned-dot {
+            width: 6px;
+            height: 6px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin-left: 4px;
+        }
+        .loading-dot {
+            width: 6px;
+            height: 6px;
+            background: #f59e0b;
+            border-radius: 50%;
+            margin-left: 4px;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">The Cabinet - Saved Collections</div>
+        <button class="save-btn">Save Current Window</button>
+    </div>
+    
+    <div class="content">
+        <div class="cabinet-grid">
+            <!-- Cabinet 1: React Project -->
+            <div class="cabinet-card">
+                <div class="cabinet-header">
+                    <div class="cabinet-info">
+                        <h3>React Dashboard Project</h3>
+                        <div class="cabinet-meta">Saved 2 hours ago • 7 tabs</div>
+                    </div>
+                    <div class="cabinet-actions">
+                        <button class="restore-btn">Restore</button>
+                        <button class="more-btn">⋯</button>
+                    </div>
+                </div>
+                <div class="tab-preview">
+                    <div class="preview-item">
+                        <div class="preview-favicon github"></div>
+                        <span class="preview-text">React Dashboard Project - github.com</span>
+                    </div>
+                    <div class="preview-item level-1">
+                        <div class="tree-line"></div>
+                        <div class="preview-favicon github"></div>
+                        <span class="preview-text">Pull Request #247: Add Dark Mode - github.com</span>
+                    </div>
+                    <div class="preview-item level-2">
+                        <div class="tree-line"></div>
+                        <div class="preview-favicon github"></div>
+                        <span class="preview-text">Files Changed - src/components/Theme.tsx - github.com</span>
+                    </div>
+                    <div class="preview-item level-1">
+                        <div class="tree-line"></div>
+                        <div class="preview-favicon github"></div>
+                        <span class="preview-text">README.md - Setup Instructions - github.com</span>
+                        <div class="pinned-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cabinet 2: Research Session -->
+            <div class="cabinet-card">
+                <div class="cabinet-header">
+                    <div class="cabinet-info">
+                        <h3>React Hooks Research</h3>
+                        <div class="cabinet-meta">Saved yesterday • 4 tabs</div>
+                    </div>
+                    <div class="cabinet-actions">
+                        <button class="restore-btn">Restore</button>
+                        <button class="more-btn">⋯</button>
+                    </div>
+                </div>
+                <div class="tab-preview">
+                    <div class="preview-item">
+                        <div class="preview-favicon stackoverflow"></div>
+                        <span class="preview-text">React Hooks Best Practices - stackoverflow.com</span>
+                    </div>
+                    <div class="preview-item level-1">
+                        <div class="tree-line"></div>
+                        <div class="preview-favicon mdn"></div>
+                        <span class="preview-text">MDN - useEffect Hook Documentation - developer.mozilla.org</span>
+                        <div class="loading-dot"></div>
+                    </div>
+                    <div class="preview-item">
+                        <div class="preview-favicon react"></div>
+                        <span class="preview-text">React Official Documentation - reactjs.org</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cabinet 3: Design System -->
+            <div class="cabinet-card">
+                <div class="cabinet-header">
+                    <div class="cabinet-info">
+                        <h3>Design System Work</h3>
+                        <div class="cabinet-meta">Saved 3 days ago • 5 tabs</div>
+                    </div>
+                    <div class="cabinet-actions">
+                        <button class="restore-btn">Restore</button>
+                        <button class="more-btn">⋯</button>
+                    </div>
+                </div>
+                <div class="tab-preview">
+                    <div class="preview-item">
+                        <div class="preview-favicon figma"></div>
+                        <span class="preview-text">Component Library Design - figma.com</span>
+                    </div>
+                    <div class="preview-item level-1">
+                        <div class="tree-line"></div>
+                        <div class="preview-favicon tailwind"></div>
+                        <span class="preview-text">Tailwind CSS Documentation - tailwindcss.com</span>
+                    </div>
+                    <div class="preview-item">
+                        <div class="preview-favicon"></div>
+                        <span class="preview-text">Color Palette Generator - coolors.co</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

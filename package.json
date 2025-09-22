@@ -6,6 +6,8 @@
     "build-css": "tailwindcss -i ./src/input.css -o ./dist/styles.css --watch",
     "build-css-prod": "tailwindcss -i ./src/input.css -o ./dist/styles.css --minify",
     "build-extension": "node scripts/build-extension.js",
+    "create-zip": "node scripts/create-zip.js",
+    "package": "npm run build-extension && npm run create-zip",
     "dev-help": "node scripts/dev-reload.js",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -10,15 +10,25 @@
   }
 
   .tree-content {
-    @apply flex items-center px-2 py-1 rounded flex-1 transition-colors;
+    @apply flex items-center px-2 py-1 rounded flex-1 transition-colors min-w-0 max-w-full;
+    transition: all 0.1s ease-out; /* Faster transitions for responsiveness */
+  }
+
+  /* Immediate visual feedback on mousedown */
+  .tree-content:active {
+    @apply transform scale-95 bg-blue-100;
   }
 
   .tree-content:hover {
-    @apply bg-gray-100;
+    @apply bg-gray-200;
   }
 
   .tree-node.active .tree-content {
-    @apply bg-blue-100 border-l-2 border-blue-500;
+    @apply bg-blue-200 border-l-2 border-blue-500;
+  }
+
+  .tree-node.active .tree-content:hover {
+    @apply bg-blue-300;
   }
 
   .tree-node.restricted .tree-content {
@@ -67,15 +77,19 @@
   }
 
   .tab-title {
-    @apply flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-700;
+    @apply overflow-hidden text-ellipsis whitespace-nowrap text-xs text-gray-700 min-w-0 pr-1;
+    flex: 1 1 0;
+    max-width: calc(100% - 2rem); /* Reserve space for favicon + close button + spacing */
   }
 
   .tab-indicators {
     @apply flex items-center ml-1;
   }
 
-  .tab-close {
-    @apply w-4 h-4 border-none bg-red-500 text-white rounded-full text-xs leading-none cursor-pointer ml-1 opacity-70 hover:opacity-100 hover:bg-red-600 transition-all;
+  /* Show close button on tab hover or when tab is active */
+  .tree-content:hover .opacity-0,
+  .tree-node.active .opacity-0 {
+    @apply opacity-100;
   }
 
   /* Loading indicator */

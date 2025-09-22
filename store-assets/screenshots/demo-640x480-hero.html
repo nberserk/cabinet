@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dist/styles.css">
+    <title>The Cabinet - Hero Demo</title>
+    <style>
+        body {
+            width: 640px;
+            height: 480px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            overflow: hidden;
+        }
+        .browser-mockup {
+            width: 400px;
+            height: 100%;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+        .browser-header {
+            height: 40px;
+            background: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .tab-bar {
+            height: 32px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            overflow: hidden;
+        }
+        .tab {
+            background: #e5e7eb;
+            border-radius: 4px 4px 0 0;
+            padding: 4px 8px;
+            margin-right: 2px;
+            font-size: 10px;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+        }
+        .tab.active {
+            background: white;
+            color: #374151;
+        }
+        .browser-content {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        .side-panel {
+            width: 240px;
+            height: 100%;
+            background: #f9fafb;
+            border-left: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-header {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            background: white;
+        }
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .panel-subtitle {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        .panel-content {
+            flex: 1;
+            padding: 8px;
+            overflow-y: auto;
+        }
+        .hierarchy-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #374151;
+            transition: background-color 0.15s;
+        }
+        .hierarchy-item:hover {
+            background: #f3f4f6;
+        }
+        .hierarchy-item.active {
+            background: #dbeafe;
+            border-left: 2px solid #3b82f6;
+        }
+        .hierarchy-item.level-1 {
+            padding-left: 20px;
+        }
+        .hierarchy-item.level-2 {
+            padding-left: 32px;
+        }
+        .favicon {
+            width: 12px;
+            height: 12px;
+            margin-right: 6px;
+            border-radius: 2px;
+            background: #e5e7eb;
+        }
+        .github { background: #24292e; }
+        .stackoverflow { background: #f48024; }
+        .mdn { background: #83cd29; }
+        .figma { background: #f24e1e; }
+        .level-indicator {
+            margin-left: auto;
+            font-size: 9px;
+            color: #9ca3af;
+            font-family: monospace;
+        }
+        .hero-text {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 10;
+        }
+        .hero-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-text">
+        <div class="hero-title">The Cabinet</div>
+        <div class="hero-subtitle">Professional Tab Management</div>
+    </div>
+    
+    <div class="browser-mockup">
+        <div class="browser-header">
+            ● ● ● Chrome Browser
+        </div>
+        <div class="tab-bar">
+            <div class="tab active">GitHub Project</div>
+            <div class="tab">Pull Request</div>
+            <div class="tab">Stack Overflow</div>
+            <div class="tab">MDN Docs</div>
+            <div class="tab">Figma Design</div>
+            <div class="tab">+</div>
+        </div>
+        <div class="browser-content">
+            Website Content Area
+        </div>
+    </div>
+    
+    <div class="side-panel">
+        <div class="panel-header">
+            <div class="panel-title">Current Window Tabs</div>
+            <div class="panel-subtitle">Organized by relationships</div>
+        </div>
+        <div class="panel-content">
+            <div class="hierarchy-item active">
+                <div class="favicon github"></div>
+                <span>React Dashboard Project</span>
+                <span class="level-indicator">L0</span>
+            </div>
+            <div class="hierarchy-item level-1">
+                <div class="favicon github"></div>
+                <span>Pull Request #247</span>
+                <span class="level-indicator">L1</span>
+            </div>
+            <div class="hierarchy-item level-2">
+                <div class="favicon github"></div>
+                <span>Code Review Comments</span>
+                <span class="level-indicator">L2</span>
+            </div>
+            <div class="hierarchy-item level-1">
+                <div class="favicon github"></div>
+                <span>README.md</span>
+                <span class="level-indicator">L1</span>
+            </div>
+            <div class="hierarchy-item">
+                <div class="favicon stackoverflow"></div>
+                <span>React Hooks Best Practices</span>
+                <span class="level-indicator">L0</span>
+            </div>
+            <div class="hierarchy-item level-1">
+                <div class="favicon mdn"></div>
+                <span>MDN useEffect Documentation</span>
+                <span class="level-indicator">L1</span>
+            </div>
+            <div class="hierarchy-item">
+                <div class="favicon figma"></div>
+                <span>Component Library Design</span>
+                <span class="level-indicator">L0</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

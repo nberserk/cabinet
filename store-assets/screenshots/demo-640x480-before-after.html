@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cabinet - Before vs After</title>
+    <style>
+        body {
+            width: 640px;
+            height: 480px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .header {
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .comparison {
+            flex: 1;
+            display: flex;
+        }
+        .before, .after {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        .before {
+            border-right: 2px solid #e5e7eb;
+        }
+        .section-title {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .before .section-title {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .after .section-title {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+        .content {
+            flex: 1;
+            padding: 16px;
+        }
+        
+        /* Before: Messy tabs */
+        .messy-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+        .messy-tab {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 10px;
+            color: #6b7280;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+        }
+        .problems {
+            margin-top: 16px;
+        }
+        .problem {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #dc2626;
+        }
+        .problem::before {
+            content: "✗";
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        /* After: Organized hierarchy */
+        .organized-hierarchy {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .hierarchy-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #374151;
+        }
+        .hierarchy-item.active {
+            background: #dbeafe;
+            border-left: 2px solid #3b82f6;
+        }
+        .hierarchy-item.level-1 {
+            padding-left: 20px;
+        }
+        .hierarchy-item.level-2 {
+            padding-left: 32px;
+        }
+        .favicon {
+            width: 10px;
+            height: 10px;
+            margin-right: 6px;
+            border-radius: 2px;
+            background: #e5e7eb;
+        }
+        .github { background: #24292e; }
+        .stackoverflow { background: #f48024; }
+        .benefits {
+            margin-top: 16px;
+        }
+        .benefit {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #16a34a;
+        }
+        .benefit::before {
+            content: "✓";
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        .level-indicator {
+            margin-left: auto;
+            font-size: 9px;
+            color: #9ca3af;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        Before vs After: The Cabinet Solution
+    </div>
+    
+    <div class="comparison">
+        <div class="before">
+            <div class="section-title">❌ Before: Tab Chaos</div>
+            <div class="content">
+                <div class="messy-tabs">
+                    <div class="messy-tab">GitHub - React...</div>
+                    <div class="messy-tab">Pull Request #2...</div>
+                    <div class="messy-tab">Stack Overflow...</div>
+                    <div class="messy-tab">MDN - useEffe...</div>
+                    <div class="messy-tab">Figma - Compo...</div>
+                    <div class="messy-tab">React Docs</div>
+                    <div class="messy-tab">Code Review</div>
+                    <div class="messy-tab">README.md</div>
+                    <div class="messy-tab">npm packages</div>
+                    <div class="messy-tab">CSS Grid Guid...</div>
+                    <div class="messy-tab">TypeScript Do...</div>
+                    <div class="messy-tab">Tailwind CSS</div>
+                    <div class="messy-tab">Design System</div>
+                    <div class="messy-tab">Color Palette</div>
+                    <div class="messy-tab">Font Pairs</div>
+                </div>
+                
+                <div class="problems">
+                    <div class="problem">Hard to find related tabs</div>
+                    <div class="problem">No visual organization</div>
+                    <div class="problem">Tabs get lost easily</div>
+                    <div class="problem">Difficult to manage workflow</div>
+                    <div class="problem">No way to save sessions</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="after">
+            <div class="section-title">✅ After: Organized Hierarchy</div>
+            <div class="content">
+                <div class="organized-hierarchy">
+                    <div class="hierarchy-item active">
+                        <div class="favicon github"></div>
+                        <span>React Dashboard Project</span>
+                        <span class="level-indicator">L0</span>
+                    </div>
+                    <div class="hierarchy-item level-1">
+                        <div class="favicon github"></div>
+                        <span>Pull Request #247</span>
+                        <span class="level-indicator">L1</span>
+                    </div>
+                    <div class="hierarchy-item level-2">
+                        <div class="favicon github"></div>
+                        <span>Code Review Comments</span>
+                        <span class="level-indicator">L2</span>
+                    </div>
+                    <div class="hierarchy-item level-1">
+                        <div class="favicon github"></div>
+                        <span>README.md</span>
+                        <span class="level-indicator">L1</span>
+                    </div>
+                    <div class="hierarchy-item">
+                        <div class="favicon stackoverflow"></div>
+                        <span>React Hooks Research</span>
+                        <span class="level-indicator">L0</span>
+                    </div>
+                    <div class="hierarchy-item level-1">
+                        <div class="favicon"></div>
+                        <span>MDN useEffect Docs</span>
+                        <span class="level-indicator">L1</span>
+                    </div>
+                </div>
+                
+                <div class="benefits">
+                    <div class="benefit">Clear parent-child relationships</div>
+                    <div class="benefit">Visual hierarchy with depth levels</div>
+                    <div class="benefit">Easy navigation and management</div>
+                    <div class="benefit">Save & restore tab sessions</div>
+                    <div class="benefit">Boost productivity instantly</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

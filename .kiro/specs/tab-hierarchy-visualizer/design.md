@@ -102,21 +102,36 @@ graph TD
 
 ### UI Renderer
 
-**Purpose**: Renders the hierarchical tree structure with visual indicators
+**Purpose**: Renders the hierarchical tree structure with visual indicators and supports incremental updates
 
 **Key Methods**:
-- `renderTree(hierarchy)`: Renders complete tree structure
+- `renderTree(hierarchy)`: Renders complete tree structure (used for initial load and complex changes)
 - `renderTabNode(tab, level, isLast)`: Renders individual tab with tree lines
 - `updateTabState(tabId, state)`: Updates visual state of specific tab
 - `highlightTab(tabId)`: Highlights tab on hover
+- `addTabElement(tab, parentId)`: Incrementally adds single tab element to existing tree
+- `removeTabElement(tabId)`: Removes specific tab element and handles child reorganization
+- `updateTabElement(tab)`: Updates properties of existing tab element without full re-render
+- `updateActiveState(tabId)`: Changes only the active state styling of tabs
 
 **Visual Elements**:
 - Tree lines (vertical/horizontal connectors)
 - Favicons and tab titles
-- Active tab highlighting
+- Active tab highlighting with incremental state updates and enhanced hover states
 - Pinned tab indicators
 - Loading states
 - Tailwind CSS classes for consistent styling and responsive design
+- Hierarchy-based padding using Tailwind padding classes (pl-0, pl-4, pl-8, pl-12, pl-16, pl-20)
+- Depth level indicators (L0, L1, L2, etc.) displayed as small monospace text with tooltips
+- Consistent spacing and typography using Tailwind utility classes
+- Progressive color hierarchy: normal (white) → hover (bg-gray-200) → active (bg-blue-200) → active+hover (bg-blue-300)
+- Conditional close button visibility: hidden by default, visible on hover or active state with smooth transitions
+
+**Performance Optimizations**:
+- Incremental DOM updates for single tab changes
+- Targeted element updates instead of full tree re-rendering
+- Efficient parent-child relationship management during incremental updates
+- Minimal DOM manipulation for state changes
 
 ### Tab Manager
 
@@ -139,11 +154,12 @@ graph TD
 **Purpose**: Manages saving and restoring of tab hierarchies
 
 **Key Methods**:
-- `saveCabinet(name, hierarchy)`: Saves current hierarchy as Cabinet
+- `saveCabinet(name, hierarchy)`: Saves current hierarchy as Cabinet with preserved depth levels
 - `loadCabinet(cabinetId)`: Retrieves saved Cabinet
-- `restoreCabinet(cabinetId)`: Opens all tabs from Cabinet
+- `restoreCabinet(cabinetId)`: Opens all tabs from Cabinet and recalculates depth levels from parent-child relationships
 - `deleteCabinet(cabinetId)`: Removes saved Cabinet
 - `listCabinets()`: Returns all saved Cabinets
+- `recalculateDepthLevels(tabs)`: Ensures correct level property based on parent-child structure
 
 **Cabinet Data Format** (stored in Chrome Storage):
 ```javascript
@@ -230,16 +246,23 @@ const sidePanelStates = new Map(); // windowId -> boolean (true = open, false = 
 
 ### Event Handler
 
-**Purpose**: Responds to Chrome tab events and user interactions
+**Purpose**: Responds to Chrome tab events and user interactions with incremental UI updates
 
 **Event Listeners**:
-- `chrome.tabs.onCreated`: Add new tab to hierarchy
-- `chrome.tabs.onRemoved`: Remove tab from hierarchy
-- `chrome.tabs.onUpdated`: Update tab information
-- `chrome.tabs.onActivated`: Update active tab state
-- `chrome.tabs.onMoved`: Update tab positions
+- `chrome.tabs.onCreated`: Add new tab to hierarchy and send TAB_ADDED message for incremental UI update
+- `chrome.tabs.onRemoved`: Remove tab from hierarchy and send TAB_REMOVED message for targeted element removal
+- `chrome.tabs.onUpdated`: Update tab information and send TAB_UPDATED message for specific tab refresh
+- `chrome.tabs.onActivated`: Update active tab state and send TAB_ACTIVATED message for visual state change only
+- `chrome.tabs.onMoved`: Update tab positions and send targeted update messages
 - `chrome.action.onClicked`: Handle toolbar button clicks for side panel toggle
 - `chrome.windows.onRemoved`: Clean up state when windows are closed
+
+**Incremental Update Messages**:
+- `TAB_ADDED`: Notifies side panel to add single tab element without full re-render
+- `TAB_REMOVED`: Notifies side panel to remove specific tab element and handle children
+- `TAB_UPDATED`: Notifies side panel to refresh specific tab's display properties
+- `TAB_ACTIVATED`: Notifies side panel to update only active state styling
+- `HIERARCHY_UPDATED`: Fallback message for complex changes requiring full re-render
 
 ## Data Models
 

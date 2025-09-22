@@ -34,10 +34,10 @@ This feature will create a Chrome extension that provides a visual representatio
 
 #### Acceptance Criteria
 
-1. WHEN the user clicks on a tab in the hierarchy THEN the system SHALL switch to that tab and bring its window to focus
+1. WHEN the user clicks on a tab in the hierarchy THEN the system SHALL provide immediate visual feedback and switch to that tab within 100ms of the mousedown event
 2. WHEN the user right-clicks on a tab in the hierarchy THEN the system SHALL show a context menu with tab management options
 3. WHEN the user selects "close tab" from the context menu THEN the system SHALL close the tab and update the hierarchy
-4. WHEN the user closes a parent tab THEN the system SHALL also close all child tabs in the hierarchy
+4. WHEN the user closes a parent tab (via close button, keyboard, or context menu) THEN the system SHALL automatically close all child tabs in the hierarchy using cascading delete
 5. WHEN the user drags a tab in the hierarchy THEN the system SHALL allow reordering or regrouping of tabs
 
 ### Requirement 4
@@ -65,6 +65,18 @@ This feature will create a Chrome extension that provides a visual representatio
 3. WHEN tab titles are long THEN the system SHALL truncate them with ellipsis while showing tooltips with full titles
 4. WHEN tabs are loading THEN the system SHALL show appropriate loading indicators
 5. WHEN tabs are pinned THEN the system SHALL visually distinguish them from regular tabs
+6. WHEN displaying tabs at different hierarchy levels THEN the system SHALL use progressive indentation using Tailwind CSS padding classes
+7. WHEN displaying tabs THEN the system SHALL show the hierarchy depth level as a visual indicator (L0, L1, L2, etc.)
+8. WHEN hovering over depth indicators THEN the system SHALL show tooltips explaining the hierarchy level
+9. WHEN hovering over normal tabs THEN the system SHALL show a medium gray background (bg-gray-200)
+10. WHEN hovering over active/selected tabs THEN the system SHALL show a darker blue background (bg-blue-300) to distinguish from normal hover state
+11. WHEN a tab is active/selected THEN the system SHALL show a distinct blue background (bg-blue-200) darker than hover but lighter than hover-on-active
+12. WHEN tabs are in normal state THEN the system SHALL hide close buttons to maintain clean appearance
+13. WHEN hovering over a tab OR when a tab is active/selected THEN the system SHALL show the close button with smooth fade-in transition
+14. WHEN the close button appears THEN the system SHALL use a 200ms opacity transition for smooth user experience
+15. WHEN the user presses down on a tab THEN the system SHALL provide immediate visual feedback with scaling and color change within 50ms
+16. WHEN tab switching occurs THEN the system SHALL update the UI optimistically before confirming the actual tab change
+17. WHEN using touch devices THEN the system SHALL respond to touch events with the same responsiveness as mouse events
 
 ### Requirement 6
 
@@ -74,9 +86,9 @@ This feature will create a Chrome extension that provides a visual representatio
 
 1. WHEN the user chooses to save the current tab hierarchy THEN the system SHALL create a Cabinet with all current window tabs and their relationships
 2. WHEN saving a Cabinet THEN the system SHALL prompt the user to provide a name for the Cabinet
-3. WHEN a Cabinet is saved THEN the system SHALL store the tab URLs, titles, hierarchy relationships, and metadata in browser storage
+3. WHEN a Cabinet is saved THEN the system SHALL store the tab URLs, titles, hierarchy relationships, depth levels, and metadata in browser storage
 4. WHEN the user wants to restore a Cabinet THEN the system SHALL display a list of saved Cabinets with their names and creation dates
-5. WHEN a Cabinet is restored THEN the system SHALL open all tabs from the Cabinet in the current window, recreating the original hierarchy
+5. WHEN a Cabinet is restored THEN the system SHALL open all tabs from the Cabinet in the current window, recreating the original hierarchy with correct depth levels, parent-child relationships, and visual indentation
 6. WHEN restoring a Cabinet THEN the system SHALL close existing tabs in the current window before opening the Cabinet tabs
 
 ### Requirement 7
@@ -118,3 +130,7 @@ This feature will create a Chrome extension that provides a visual representatio
 3. WHEN tabs change frequently THEN the system SHALL efficiently update the hierarchy without causing browser lag
 4. WHEN the extension is not actively being used THEN the system SHALL minimize background processing
 5. WHEN rendering Cabinet previews with many tabs THEN the system SHALL use efficient rendering techniques to maintain smooth performance
+6. WHEN a single tab is added THEN the system SHALL update only the affected part of the hierarchy display without full re-rendering
+7. WHEN a single tab is removed THEN the system SHALL remove only that tab element from the display without rebuilding the entire tree
+8. WHEN a tab's properties change THEN the system SHALL update only that specific tab's display elements
+9. WHEN the active tab changes THEN the system SHALL update only the visual active state without re-rendering other tabs
