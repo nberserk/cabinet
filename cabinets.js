@@ -353,103 +353,93 @@ function renderDetailedCabinetPreview(container, tabs) {
     container.appendChild(previewContainer);
 }
 
-// Render individual tab node in preview with compact tree structure
+// Render individual tab node in preview using sidepanel logic
 function renderTabNodeInPreview(container, tabNode, depth, isLast = false, ancestorLines = []) {
-    if (!tabNode || !tabNode.id) return;
+    if (!tabNode || !tabNode.id) {
+        console.warn('Invalid tab node:', tabNode);
+        return;
+    }
     
     // Ensure children array exists
     if (!tabNode.children) {
         tabNode.children = [];
     }
     
-    // Create tab element with compact styling
+    // Create main tab element (same as sidepanel)
     const tabElement = document.createElement('div');
-    tabElement.className = 'compact-tab-node flex items-center py-1 text-xs';
+    tabElement.className = 'tree-node';
+    tabElement.setAttribute('data-tab-id', tabNode.id);
     tabElement.setAttribute('data-level', depth);
+    tabElement.setAttribute('role', 'treeitem');
+    tabElement.setAttribute('aria-level', depth + 1);
+    tabElement.setAttribute('aria-expanded', tabNode.children.length > 0 ? 'true' : 'false');
+    tabElement.setAttribute('tabindex', '-1');
     
-    // Compact tree lines container
-    const treeLinesContainer = document.createElement('div');
-    treeLinesContainer.className = 'flex items-center mr-2 flex-shrink-0';
-    treeLinesContainer.style.width = `${depth * 8 + 8}px`; // Reduced spacing
-    
-    // Add ancestor lines (minimal)
-    for (let i = 0; i < depth; i++) {
-        const line = document.createElement('div');
-        line.className = 'w-2 h-4 flex items-center justify-center';
-        if (ancestorLines[i]) {
-            line.innerHTML = '<div class="compact-tree-line h-4"></div>';
-        }
-        treeLinesContainer.appendChild(line);
+    if (tabNode.isActive) {
+        tabElement.classList.add('active');
+        tabElement.setAttribute('aria-selected', 'true');
     }
     
-    // Add current level connector (minimal)
-    if (depth > 0) {
-        const connector = document.createElement('div');
-        connector.className = 'w-2 h-px bg-gray-300 mr-1';
-        treeLinesContainer.appendChild(connector);
-    }
+    // Tab content wrapper (same as sidepanel)
+    const tabContent = document.createElement('div');
+    tabContent.className = 'tree-content';
     
-    tabElement.appendChild(treeLinesContainer);
+    // Add padding based on hierarchy depth using Tailwind classes (same as sidepanel)
+    const paddingClasses = ['pl-0', 'pl-4', 'pl-8', 'pl-12', 'pl-16', 'pl-20'];
+    const paddingClass = paddingClasses[Math.min(depth, paddingClasses.length - 1)];
+    tabContent.classList.add(paddingClass);
     
-    // Compact favicon
+    // Favicon (same as sidepanel)
     const favicon = document.createElement('img');
-    favicon.className = 'compact-favicon';
+    favicon.className = 'tab-favicon';
     favicon.src = tabNode.favicon || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="%23ddd"/></svg>';
     favicon.alt = '';
-    favicon.onerror = () => {
-        favicon.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="%23ddd"/></svg>';
-    };
-    tabElement.appendChild(favicon);
+    favicon.setAttribute('aria-hidden', 'true');
+    tabContent.appendChild(favicon);
     
-    // Tab info container (compact)
-    const tabInfo = document.createElement('div');
-    tabInfo.className = 'flex-1 min-w-0';
-    
-    // Title (compact)
+    // Title (same as sidepanel)
     const title = document.createElement('div');
-    title.className = 'font-medium text-gray-900 truncate';
-    title.textContent = tabNode.title || 'Untitled';
-    title.title = tabNode.title || 'Untitled';
-    tabInfo.appendChild(title);
+    title.className = 'tab-title';
+    title.textContent = tabNode.title || tabNode.url || 'Untitled';
+    title.setAttribute('title', tabNode.title || tabNode.url || 'Untitled');
+    tabContent.appendChild(title);
     
-    // Domain-only URL (compact)
-    if (tabNode.url) {
-        const url = document.createElement('div');
-        url.className = 'text-gray-500 truncate text-xs';
-        try {
-            const domain = new URL(tabNode.url).hostname;
-            url.textContent = domain;
-        } catch {
-            url.textContent = tabNode.url;
-        }
-        url.title = tabNode.url; // Full URL in tooltip
-        tabInfo.appendChild(url);
-    }
+    // Depth indicator (same as sidepanel)
+    const depthIndicator = document.createElement('span');
+    depthIndicator.className = 'text-xs text-gray-400 ml-2 font-mono';
+    depthIndicator.textContent = `L${depth}`;
+    depthIndicator.setAttribute('title', `Hierarchy level: ${depth}`);
+    tabContent.appendChild(depthIndicator);
     
-    tabElement.appendChild(tabInfo);
-    
-    // Compact indicators (small dots)
+    // Tab indicators (same as sidepanel)
     const indicators = document.createElement('div');
-    indicators.className = 'flex items-center space-x-1 ml-2 flex-shrink-0';
+    indicators.className = 'tab-indicators';
     
     if (tabNode.isPinned) {
-        const pinnedIcon = document.createElement('div');
-        pinnedIcon.className = 'w-2 h-2 bg-blue-500 rounded-full';
-        pinnedIcon.title = 'Pinned tab';
-        indicators.appendChild(pinnedIcon);
+        const pinnedIndicator = document.createElement('div');
+        pinnedIndicator.className = 'pinned-indicator';
+        pinnedIndicator.setAttribute('title', 'Pinned tab');
+        pinnedIndicator.setAttribute('aria-label', 'Pinned tab');
+        indicators.appendChild(pinnedIndicator);
     }
     
     if (tabNode.isLoading) {
-        const loadingIcon = document.createElement('div');
-        loadingIcon.className = 'w-2 h-2 bg-amber-500 rounded-full animate-pulse';
-        loadingIcon.title = 'Was loading when saved';
-        indicators.appendChild(loadingIcon);
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.setAttribute('title', 'Loading...');
+        loadingIndicator.setAttribute('aria-label', 'Loading');
+        indicators.appendChild(loadingIndicator);
     }
     
-    tabElement.appendChild(indicators);
+    tabContent.appendChild(indicators);
+    
+    // No close button for cabinet preview (read-only)
+    // No event handlers for cabinet preview (read-only)
+    
+    tabElement.appendChild(tabContent);
     container.appendChild(tabElement);
     
-    // Render children
+    // Render children (same as sidepanel)
     if (tabNode.children && tabNode.children.length > 0) {
         const newAncestorLines = [...ancestorLines];
         newAncestorLines[depth] = !isLast;
