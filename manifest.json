@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "The Cabinet",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Professional tab management Chrome extension. Save and restore complete tab structures as Cabinets.",
     "author": "Rachael Ko",
     "homepage_url": "https://github.com/nberserk/public-cabinet/",
@@ -27,6 +27,6 @@
         }
     },
     "side_panel": {
-        "default_path": "sidepanel.html"
+        "default_path": "sidepanel-react.html"
     }
 }

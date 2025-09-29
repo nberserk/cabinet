@@ -630,6 +630,120 @@ async function handleCascadingDelete(tabId) {
     }
 }
 
+// Incremental update handlers
+function handleTabAdded(tab, parentId) {
+    console.log('Adding tab:', tab.id, 'parent:', parentId);
+    // For now, fall back to full re-render
+    // TODO: Implement incremental add
+    if (hierarchyState) {
+        renderHierarchy();
+    }
+}
+
+function handleTabRemoved(tabId) {
+    console.log('Removing tab:', tabId);
+    
+    // Remove tab element from DOM
+    const tabElement = document.querySelector(`[data-tab-id="${tabId}"]`);
+    if (tabElement) {
+        tabElement.remove();
+        console.log('Removed tab element from DOM:', tabId);
+    }
+    
+    // Update hierarchy state if available
+    if (hierarchyState && hierarchyState.rootTabs) {
+        removeTabFromHierarchyState(hierarchyState.rootTabs, tabId);
+        hierarchyState.tabCount = Math.max(0, (hierarchyState.tabCount || 0) - 1);
+    }
+}
+
+function handleTabUpdated(tab) {
+    console.log('Updating tab:', tab.id);
+    
+    // Find and update tab element
+    const tabElement = document.querySelector(`[data-tab-id="${tab.id}"]`);
+    if (tabElement) {
+        const titleElement = tabElement.querySelector('.tab-title');
+        const faviconElement = tabElement.querySelector('.tab-favicon');
+        
+        if (titleElement) {
+            titleElement.textContent = tab.title || tab.url || 'Untitled';
+            titleElement.setAttribute('title', tab.title || tab.url || 'Untitled');
+        }
+        
+        if (faviconElement && tab.favicon) {
+            faviconElement.src = tab.favicon;
+        }
+        
+        console.log('Updated tab element:', tab.id);
+    }
+    
+    // Update hierarchy state if available
+    if (hierarchyState && hierarchyState.rootTabs) {
+        updateTabInHierarchyState(hierarchyState.rootTabs, tab);
+    }
+}
+
+function handleTabActivated(tabId) {
+    console.log('Activating tab:', tabId);
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.tree-node.active').forEach(node => {
+        node.classList.remove('active');
+        node.setAttribute('aria-selected', 'false');
+    });
+    
+    // Add active class to new active tab
+    const activeTabElement = document.querySelector(`[data-tab-id="${tabId}"]`);
+    if (activeTabElement) {
+        activeTabElement.classList.add('active');
+        activeTabElement.setAttribute('aria-selected', 'true');
+        console.log('Activated tab element:', tabId);
+    }
+    
+    // Update hierarchy state if available
+    if (hierarchyState && hierarchyState.rootTabs) {
+        updateActiveTabInHierarchyState(hierarchyState.rootTabs, tabId);
+        hierarchyState.activeTabId = tabId;
+    }
+}
+
+// Helper functions for hierarchy state updates
+function removeTabFromHierarchyState(tabs, tabId) {
+    for (let i = tabs.length - 1; i >= 0; i--) {
+        if (tabs[i].id === tabId) {
+            tabs.splice(i, 1);
+            return true;
+        }
+        if (tabs[i].children && removeTabFromHierarchyState(tabs[i].children, tabId)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function updateTabInHierarchyState(tabs, updatedTab) {
+    for (const tab of tabs) {
+        if (tab.id === updatedTab.id) {
+            Object.assign(tab, updatedTab);
+            return true;
+        }
+        if (tab.children && updateTabInHierarchyState(tab.children, updatedTab)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function updateActiveTabInHierarchyState(tabs, activeTabId) {
+    for (const tab of tabs) {
+        tab.isActive = tab.id === activeTabId;
+        if (tab.children) {
+            updateActiveTabInHierarchyState(tab.children, activeTabId);
+        }
+    }
+}
+
 // Listen for hierarchy updates from background script
 chrome.runtime.onMessage.addListener((message) => {
     try {
