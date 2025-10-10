@@ -1,0 +1,134 @@
+import { useState, useEffect } from 'react';
+import type { Tab } from '../types';
+
+export const TabManager = () => {
+  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Convert chrome.tabs.Tab to our Tab interface and build hierarchy
+  const buildTabHierarchy = (chromeTabs: chrome.tabs.Tab[]): Tab[] => {
+    const tabMap = new Map<number, Tab>();
+    const rootTabs: Tab[] = [];
+
+    // First pass: create all tab objects
+    chromeTabs.forEach(chromeTab => {
+      if (chromeTab.id) {
+        const tab: Tab = {
+          id: chromeTab.id,
+          title: chromeTab.title || 'Untitled',
+          url: chromeTab.url || '',
+          favIconUrl: chromeTab.favIconUrl,
+          active: chromeTab.active || false,
+          openerId: chromeTab.openerTabId,
+          level: 0,
+          children: []
+        };
+        tabMap.set(chromeTab.id, tab);
+      }
+    });
+
+    // Second pass: build parent-child relationships and calculate levels
+    tabMap.forEach(tab => {
+      if (tab.openerId && tabMap.has(tab.openerId)) {
+        const parent = tabMap.get(tab.openerId)!;
+        parent.children.push(tab);
+        tab.level = parent.level + 1;
+      } else {
+        rootTabs.push(tab);
+      }
+    });
+
+    // Sort function to maintain tree order
+    const sortTabs = (tabList: Tab[]): Tab[] => {
+      return tabList
+        .sort((a, b) => a.id - b.id) // Sort by tab ID to maintain order
+        .map(tab => ({
+          ...tab,
+          children: sortTabs(tab.children)
+        }));
+    };
+
+    return sortTabs(rootTabs);
+  };
+
+  // Flatten hierarchy for display while preserving tree structure
+  const flattenTabs = (tabs: Tab[]): Tab[] => {
+    const result: Tab[] = [];
+    
+    const addTabsRecursively = (tabList: Tab[]) => {
+      tabList.forEach(tab => {
+        result.push(tab);
+        if (tab.children.length > 0) {
+          addTabsRecursively(tab.children);
+        }
+      });
+    };
+    
+    addTabsRecursively(tabs);
+    return result;
+  };
+
+  // Get current window tabs
+  const getCurrentWindowTabs = async (): Promise<Tab[]> => {
+    try {
+      const currentWindow = await chrome.windows.getCurrent();
+      const chromeTabs = await chrome.tabs.query({ windowId: currentWindow.id });
+      const hierarchicalTabs = buildTabHierarchy(chromeTabs);
+      return flattenTabs(hierarchicalTabs);
+    } catch (error) {
+      console.error('Error getting tabs:', error);
+      return [];
+    }
+  };
+
+  // Initialize tabs
+  useEffect(() => {
+    const initializeTabs = async () => {
+      setLoading(true);
+      const currentTabs = await getCurrentWindowTabs();
+      setTabs(currentTabs);
+      setLoading(false);
+    };
+
+    initializeTabs();
+  }, []);
+
+  // Tab event listeners
+  useEffect(() => {
+    const handleTabCreated = async (tab: chrome.tabs.Tab) => {
+      const currentTabs = await getCurrentWindowTabs();
+      setTabs(currentTabs);
+    };
+
+    const handleTabRemoved = async (tabId: number) => {
+      const currentTabs = await getCurrentWindowTabs();
+      setTabs(currentTabs);
+    };
+
+    const handleTabUpdated = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
+      // Only refresh if important properties changed
+      if (changeInfo.title || changeInfo.url || changeInfo.favIconUrl) {
+        const currentTabs = await getCurrentWindowTabs();
+        setTabs(currentTabs);
+      }
+    };
+
+    // Add listeners
+    chrome.tabs.onCreated.addListener(handleTabCreated);
+    chrome.tabs.onRemoved.addListener(handleTabRemoved);
+    chrome.tabs.onUpdated.addListener(handleTabUpdated);
+
+    // Cleanup listeners
+    return () => {
+      chrome.tabs.onCreated.removeListener(handleTabCreated);
+      chrome.tabs.onRemoved.removeListener(handleTabRemoved);
+      chrome.tabs.onUpdated.removeListener(handleTabUpdated);
+    };
+  }, []);
+
+  return {
+    tabs,
+    loading,
+    refreshTabs: getCurrentWindowTabs
+  };
+};
