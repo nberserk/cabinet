@@ -23,7 +23,7 @@ const TabItem = ({ tab }: { tab: Tab }) => {
                 isLight
                     ? 'hover:bg-gray-100 text-gray-900'
                     : 'hover:bg-gray-700 text-gray-100',
-                tab.active
+                tab.highlighted
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
                     : 'border-transparent'
             )}
@@ -41,7 +41,7 @@ const TabItem = ({ tab }: { tab: Tab }) => {
             )}
             <div className="flex-1 min-w-0">
                 <div className={cn(
-                    'text-sm font-medium truncate',
+                    'text-xs font-medium truncate',
                     isLight ? 'text-gray-900' : 'text-gray-100'
                 )}>
                     {tab.title}

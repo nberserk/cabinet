@@ -3,7 +3,7 @@ export interface Tab {
   title: string;
   url: string;
   favIconUrl?: string;
-  active: boolean;
+  highlighted: boolean;
   openerId?: number;
   level: number;
   children: Tab[];
