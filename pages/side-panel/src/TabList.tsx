@@ -21,7 +21,7 @@ const TabItem = ({ tab }: { tab: Tab }) => {
             className={cn(
                 'flex items-center p-2 cursor-pointer border-l-4 transition-colors',
                 tab.highlighted
-                    ? 'border-blue-500 bg-blue-600 text-white shadow-lg'
+                    ? 'bg-gray-600 text-white shadow-lg'
                     : isLight
                         ? 'hover:bg-gray-100 text-gray-900 border-transparent'
                         : 'hover:bg-gray-700 text-gray-100 border-transparent'
