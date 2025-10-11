@@ -19,17 +19,16 @@ const TabItem = ({ tab }: { tab: Tab }) => {
         <div
             onClick={handleTabClick}
             className={cn(
-                'flex items-center p-2 cursor-pointer border-l-2 transition-colors',
-                isLight
-                    ? 'hover:bg-gray-100 text-gray-900'
-                    : 'hover:bg-gray-700 text-gray-100',
+                'flex items-center p-2 cursor-pointer border-l-4 transition-colors',
                 tab.highlighted
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
-                    : 'border-transparent'
+                    ? 'border-blue-500 bg-blue-600 text-white shadow-lg'
+                    : isLight
+                        ? 'hover:bg-gray-100 text-gray-900 border-transparent'
+                        : 'hover:bg-gray-700 text-gray-100 border-transparent'
             )}
             style={indentStyle}
         >
-            {tab.favIconUrl && (
+            {tab.favIconUrl ? (
                 <img
                     src={tab.favIconUrl}
                     alt=""
@@ -38,11 +37,18 @@ const TabItem = ({ tab }: { tab: Tab }) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                     }}
                 />
+            ) : (
+                <div className="w-4 h-4 mr-2 flex-shrink-0 bg-blue-100 rounded-sm flex items-center justify-center text-blue-600">
+                    🌐
+                </div>
             )}
             <div className="flex-1 min-w-0">
                 <div className={cn(
-                    'text-xs font-medium truncate',
-                    isLight ? 'text-gray-900' : 'text-gray-100'
+                    'text-xs truncate text-left',
+                    tab.highlighted
+                        ? 'font-bold text-white'
+                        : 'font-medium',
+                    !tab.highlighted && (isLight ? 'text-gray-900' : 'text-gray-100')
                 )}>
                     {tab.title}
                 </div>
@@ -50,7 +56,11 @@ const TabItem = ({ tab }: { tab: Tab }) => {
             {tab.children.length > 0 && (
                 <span className={cn(
                     'text-xs ml-2',
-                    isLight ? 'text-gray-400' : 'text-gray-500'
+                    tab.highlighted
+                        ? 'text-blue-100'
+                        : isLight
+                            ? 'text-gray-400'
+                            : 'text-gray-400'
                 )}>
                     ({tab.children.length})
                 </span>
