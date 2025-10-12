@@ -8,8 +8,3 @@ export interface Tab {
   level: number;
   children: Tab[];
 }
-
-export interface TabEvent {
-  type: 'created' | 'removed' | 'updated';
-  tab: chrome.tabs.Tab;
-}
