@@ -16,7 +16,8 @@ export const TabManager = () => {
             console.log('🎯 Active tab (will be highlighted):', {
                 id: activeTab.id,
                 title: activeTab.title || 'Untitled',
-                url: activeTab.url
+                url: activeTab.url,
+                parentTabId: activeTab.openerTabId || 'null'
             });
         } else {
             console.log('⚠️ No highlighted tab found in current window');

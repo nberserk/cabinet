@@ -6,5 +6,5 @@ export interface Tab {
   highlighted: boolean;
   openerId?: number;
   level: number;
-  children: Tab[];
+  children: Tab[];  // run time data
 }
