@@ -110,25 +110,29 @@ export const TabManager = () => {
 
     // Tab event listeners
     useEffect(() => {
-        const handleTabCreated = async () => {
+        const handleTabCreated = async (tab: chrome.tabs.Tab) => {
+            console.log('🆕 Tab created:', tab.id, tab.title);
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };
 
-        const handleTabRemoved = async () => {
+        const handleTabRemoved = async (tabId: number) => {
+            console.log('🗑️ Tab removed:', tabId);
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };
 
-        const handleTabUpdated = async (_tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
+        const handleTabUpdated = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
             // Only refresh if important properties changed
             if (changeInfo.title || changeInfo.url || changeInfo.favIconUrl) {
+                console.log('📝 Tab updated:', tabId, changeInfo);
                 const currentTabs = await getCurrentWindowTabs();
                 setTabs(currentTabs);
             }
         };
 
-        const handleTabActivated = async () => {
+        const handleTabActivated = async (activeInfo: chrome.tabs.TabActiveInfo) => {
+            console.log('🎯 Tab activated:', activeInfo.tabId);
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };

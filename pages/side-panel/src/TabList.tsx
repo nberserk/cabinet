@@ -97,7 +97,7 @@ const TabList = () => {
 
     return (
         <div className={cn(
-            'border-t',
+            'border-t flex flex-col h-full',
             isLight ? 'border-gray-200' : 'border-gray-600'
         )}>
             <div className={cn(
@@ -108,7 +108,7 @@ const TabList = () => {
             )}>
                 Tabs ({tabs.length})
             </div>
-            <div className="max-h-96 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto">
                 {tabs.map(tab => (
                     <TabItem key={tab.id} tab={tab} />
                 ))}
