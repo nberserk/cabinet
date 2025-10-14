@@ -3,8 +3,5 @@ export interface Tab {
   title: string;
   url: string;
   favIconUrl?: string;
-  highlighted: boolean;
   openerId?: number;
-  level: number;
-  children: Tab[];  // run time data
 }

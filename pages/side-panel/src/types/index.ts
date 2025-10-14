@@ -1,0 +1,1 @@
+export type { TabUI } from './tab.js';

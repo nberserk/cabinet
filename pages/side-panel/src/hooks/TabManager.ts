@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import type { Tab } from '@extension/shared';
+import type { TabUI } from '../types';
 
 export const TabManager = () => {
-    const [tabs, setTabs] = useState<Tab[]>([]);
+    const [tabs, setTabs] = useState<TabUI[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Convert chrome.tabs.Tab to our Tab interface and build hierarchy
-    const buildTabHierarchy = (chromeTabs: chrome.tabs.Tab[]): Tab[] => {
-        const tabMap = new Map<number, Tab>();
-        const rootTabs: Tab[] = [];
+    // Convert chrome.tabs.Tab to our TabUI interface and build hierarchy
+    const buildTabHierarchy = (chromeTabs: chrome.tabs.Tab[]): TabUI[] => {
+        const tabMap = new Map<number, TabUI>();
+        const rootTabs: TabUI[] = [];
 
         // Find and log active tab (Chrome's active becomes our highlighted)
         const activeTab = chromeTabs.find(chromeTab => chromeTab.highlighted);
@@ -26,7 +26,7 @@ export const TabManager = () => {
         // First pass: create all tab objects
         chromeTabs.forEach(chromeTab => {
             if (chromeTab.id) {
-                const tab: Tab = {
+                const tab: TabUI = {
                     id: chromeTab.id,
                     title: chromeTab.title || 'Untitled',
                     url: chromeTab.url || '',
@@ -52,7 +52,7 @@ export const TabManager = () => {
         });
 
         // Sort function to maintain tree order
-        const sortTabs = (tabList: Tab[]): Tab[] => {
+        const sortTabs = (tabList: TabUI[]): TabUI[] => {
             return tabList
                 .sort((a, b) => a.id - b.id) // Sort by tab ID to maintain order
                 .map(tab => ({
@@ -65,10 +65,10 @@ export const TabManager = () => {
     };
 
     // Flatten hierarchy for display while preserving tree structure
-    const flattenTabs = (tabs: Tab[]): Tab[] => {
-        const result: Tab[] = [];
+    const flattenTabs = (tabs: TabUI[]): TabUI[] => {
+        const result: TabUI[] = [];
 
-        const addTabsRecursively = (tabList: Tab[]) => {
+        const addTabsRecursively = (tabList: TabUI[]) => {
             tabList.forEach(tab => {
                 result.push(tab);
                 if (tab.children.length > 0) {
@@ -84,7 +84,7 @@ export const TabManager = () => {
 
 
     // Get current window tabs
-    const getCurrentWindowTabs = async (): Promise<Tab[]> => {
+    const getCurrentWindowTabs = async (): Promise<TabUI[]> => {
         try {
             const currentWindow = await chrome.windows.getCurrent();
             const chromeTabs = await chrome.tabs.query({ windowId: currentWindow.id });
@@ -110,17 +110,17 @@ export const TabManager = () => {
 
     // Tab event listeners
     useEffect(() => {
-        const handleTabCreated = async (tab: chrome.tabs.Tab) => {
+        const handleTabCreated = async () => {
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };
 
-        const handleTabRemoved = async (tabId: number) => {
+        const handleTabRemoved = async () => {
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };
 
-        const handleTabUpdated = async (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) => {
+        const handleTabUpdated = async (_tabId: number, changeInfo: chrome.tabs.TabChangeInfo) => {
             // Only refresh if important properties changed
             if (changeInfo.title || changeInfo.url || changeInfo.favIconUrl) {
                 const currentTabs = await getCurrentWindowTabs();
@@ -128,8 +128,7 @@ export const TabManager = () => {
             }
         };
 
-        const handleTabActivated = async (activeInfo: chrome.tabs.TabActiveInfo) => {
-            console.log('🎯 Tab activated:', activeInfo.tabId);
+        const handleTabActivated = async () => {
             const currentTabs = await getCurrentWindowTabs();
             setTabs(currentTabs);
         };

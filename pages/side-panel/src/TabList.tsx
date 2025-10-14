@@ -2,9 +2,9 @@ import { useStorage } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
 import { cn } from '@extension/ui';
 import { TabManager } from './hooks/TabManager';
-import type { Tab } from '@extension/shared';
+import type { TabUI } from './types';
 
-const TabItem = ({ tab }: { tab: Tab }) => {
+const TabItem = ({ tab }: { tab: TabUI }) => {
     const { isLight } = useStorage(exampleThemeStorage);
 
     const handleTabClick = () => {
