@@ -20,38 +20,40 @@ export const cabinetStorage: CabinetStorageType = {
   ...storage,
 
   async addCabinet(cabinet: Cabinet): Promise<void> {
-    const cabinets = await storage.get();
-    const existingIndex = cabinets.findIndex(c => c.id === cabinet.id);
+    await storage.set(currentCabinets => {
+      const existingIndex = currentCabinets.findIndex(c => c.id === cabinet.id);
 
-    if (existingIndex >= 0) {
-      // Update existing cabinet
-      cabinets[existingIndex] = { ...cabinet, updatedAt: Date.now() };
-    } else {
-      // Add new cabinet
-      cabinets.push(cabinet);
-    }
-
-    await storage.set(cabinets);
+      if (existingIndex >= 0) {
+        // Update existing cabinet
+        const updated = [...currentCabinets];
+        updated[existingIndex] = { ...cabinet, updatedAt: Date.now() };
+        return updated;
+      } else {
+        // Add new cabinet
+        return [...currentCabinets, cabinet];
+      }
+    });
   },
 
   async removeCabinet(cabinetId: string): Promise<void> {
-    const cabinets = await storage.get();
-    const updatedCabinets = cabinets.filter(c => c.id !== cabinetId);
-    await storage.set(updatedCabinets);
+    await storage.set(currentCabinets => currentCabinets.filter(c => c.id !== cabinetId));
   },
 
   async updateCabinet(cabinetId: string, updates: Partial<Cabinet>): Promise<void> {
-    const cabinets = await storage.get();
-    const cabinetIndex = cabinets.findIndex(c => c.id === cabinetId);
+    await storage.set(currentCabinets => {
+      const cabinetIndex = currentCabinets.findIndex(c => c.id === cabinetId);
 
-    if (cabinetIndex >= 0) {
-      cabinets[cabinetIndex] = {
-        ...cabinets[cabinetIndex],
-        ...updates,
-        updatedAt: Date.now(),
-      };
-      await storage.set(cabinets);
-    }
+      if (cabinetIndex >= 0) {
+        const updated = [...currentCabinets];
+        updated[cabinetIndex] = {
+          ...updated[cabinetIndex],
+          ...updates,
+          updatedAt: Date.now(),
+        };
+        return updated;
+      }
+      return currentCabinets; // No change if cabinet not found
+    });
   },
 
   async getCabinet(cabinetId: string): Promise<Cabinet | null> {
