@@ -2,7 +2,7 @@ import { useStorage } from '@extension/shared';
 import { exampleThemeStorage } from '@extension/storage';
 import { cn } from '@extension/ui';
 import { TabManager } from './hooks/TabManager';
-import type { TabUI } from './types';
+import type { TabUI } from '@extension/shared';
 
 const TabItem = ({ tab }: { tab: TabUI }) => {
     const { isLight } = useStorage(exampleThemeStorage);

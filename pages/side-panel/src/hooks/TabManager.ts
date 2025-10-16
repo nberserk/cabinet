@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { TabUI } from '../types';
+import type { TabUI } from '@extension/shared';
 
 export const TabManager = () => {
     const [tabs, setTabs] = useState<TabUI[]>([]);
