@@ -1,7 +1,6 @@
 
-## 0.2
-- fixed rendering logic of cabinet page: icon was too big
-- can 
+## 1.0.1 (2025.10.16)
+- rebuit UI using React/Vite/Tailwind CSS
 
-## 0.1
-- initial version
+## 1.0.0 
+- initial version 
