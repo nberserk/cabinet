@@ -1,5 +1,5 @@
 import 'webextension-polyfill';
-import { exampleThemeStorage } from '@extension/storage';
+import { exampleThemeStorage, windowCabinetMappingStorage } from '@extension/storage';
 import type { Cabinet } from '@extension/shared';
 
 exampleThemeStorage.get().then(theme => {
@@ -33,6 +33,19 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
 });
 
+// Clean up window-cabinet mapping when windows are closed
+chrome.windows.onRemoved.addListener(async windowId => {
+  try {
+    const mappedCabinetId = await windowCabinetMappingStorage.getMapping(windowId);
+    if (mappedCabinetId) {
+      await windowCabinetMappingStorage.removeMapping(windowId);
+      console.log(`Cleaned up mapping for closed window ${windowId} (was mapped to ${mappedCabinetId})`);
+    }
+  } catch (error) {
+    console.error('Failed to clean up window mapping:', error);
+  }
+});
+
 // Handle cabinet restoration requests
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'restoreCabinet') {
@@ -60,6 +73,10 @@ const restoreCabinet = async (cabinet: Cabinet): Promise<void> => {
     if (!newWindow.id) {
       throw new Error('Failed to create new window');
     }
+
+    // Store the window-cabinet mapping
+    await windowCabinetMappingStorage.setMapping(newWindow.id, cabinet.id);
+    console.log(`Mapped window ${newWindow.id} to cabinet ${cabinet.id}`);
 
     // Create remaining tabs
     const tabPromises = cabinet.tabs.slice(1).map(async tab =>
