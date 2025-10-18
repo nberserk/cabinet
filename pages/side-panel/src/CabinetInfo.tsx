@@ -1,5 +1,5 @@
 import { useStorage } from '@extension/shared';
-import { exampleThemeStorage, cabinetStorage, windowCabinetMappingStorage } from '@extension/storage';
+import { cabinetStorage, windowCabinetMappingStorage } from '@extension/storage';
 import { cn } from '@extension/ui';
 import { useState, useEffect } from 'react';
 import type { Cabinet, Tab } from '@extension/shared';
@@ -8,11 +8,10 @@ interface SaveCabinetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (cabinetData: { name: string; description?: string; tags?: string[] }) => void;
-  isLight: boolean;
   existingCabinet?: Cabinet | null;
 }
 
-const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }: SaveCabinetModalProps) => {
+const SaveCabinetModal = ({ isOpen, onClose, onSave, existingCabinet }: SaveCabinetModalProps) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState('');
@@ -66,16 +65,14 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className={cn('w-80 rounded-lg p-6 shadow-lg', isLight ? 'bg-white' : 'bg-gray-800')}>
-        <h2 className={cn('mb-4 text-lg font-semibold', isLight ? 'text-gray-900' : 'text-gray-100')}>
+      <div className="w-80 rounded-lg bg-white p-6 shadow-lg">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">
           {existingCabinet ? 'Update Cabinet' : 'Save Cabinet'}
         </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label
-              htmlFor="cabinet-name"
-              className={cn('mb-2 block text-sm font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>
+            <label htmlFor="cabinet-name" className="mb-2 block text-sm font-medium text-gray-700">
               Name *
             </label>
             <input
@@ -84,20 +81,13 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Enter cabinet name"
-              className={cn(
-                'w-full rounded-md border px-3 py-2 text-sm',
-                isLight
-                  ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                  : 'border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400',
-              )}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="cabinet-description"
-              className={cn('mb-2 block text-sm font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>
+            <label htmlFor="cabinet-description" className="mb-2 block text-sm font-medium text-gray-700">
               Description
             </label>
             <textarea
@@ -106,19 +96,12 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
               onChange={e => setDescription(e.target.value)}
               placeholder="Optional description"
               rows={3}
-              className={cn(
-                'w-full resize-none rounded-md border px-3 py-2 text-sm',
-                isLight
-                  ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                  : 'border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400',
-              )}
+              className="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div className="mb-6">
-            <label
-              htmlFor="cabinet-tags"
-              className={cn('mb-2 block text-sm font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>
+            <label htmlFor="cabinet-tags" className="mb-2 block text-sm font-medium text-gray-700">
               Tags
             </label>
             <input
@@ -127,12 +110,7 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
               value={tags}
               onChange={e => setTags(e.target.value)}
               placeholder="Comma-separated tags (e.g., work, research)"
-              className={cn(
-                'w-full rounded-md border px-3 py-2 text-sm',
-                isLight
-                  ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
-                  : 'border-gray-600 bg-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-400 focus:ring-1 focus:ring-blue-400',
-              )}
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -141,12 +119,7 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
               type="button"
               onClick={onClose}
               disabled={saving}
-              className={cn(
-                'flex-1 rounded-md px-4 py-2 text-sm transition-colors',
-                isLight
-                  ? 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-                  : 'border border-gray-600 text-gray-300 hover:bg-gray-700',
-              )}>
+              className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50">
               Cancel
             </button>
             <button
@@ -156,9 +129,7 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
                 'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
                 !name.trim() || saving
                   ? 'cursor-not-allowed bg-gray-400 text-gray-200'
-                  : isLight
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-blue-500 text-white hover:bg-blue-600',
+                  : 'bg-blue-600 text-white hover:bg-blue-700',
               )}>
               {saving ? (existingCabinet ? 'Updating...' : 'Saving...') : existingCabinet ? 'Update' : 'Save'}
             </button>
@@ -170,7 +141,6 @@ const SaveCabinetModal = ({ isOpen, onClose, onSave, isLight, existingCabinet }:
 };
 
 const CabinetInfo = () => {
-  const { isLight } = useStorage(exampleThemeStorage);
   const windowCabinetMapping = useStorage(windowCabinetMappingStorage);
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -296,89 +266,37 @@ const CabinetInfo = () => {
 
   return (
     <>
-      <div className={cn('border-b p-4', isLight ? 'border-gray-200 bg-white' : 'border-gray-600 bg-gray-800')}>
-        {/* Debug Info - Development Only */}
-        {process.env.NODE_ENV === 'development' && (
-          <div
-            className={cn(
-              'mb-3 rounded-md p-2 text-xs',
-              isLight ? 'border border-gray-200 bg-gray-50' : 'border border-gray-600 bg-gray-800',
-            )}>
-            <div className={cn('mb-1 font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>Window Info (Dev)</div>
-            <div className={cn('space-y-1', isLight ? 'text-gray-600' : 'text-gray-400')}>
-              <div>Window ID: {currentWindowId || 'Loading...'}</div>
-              <div>Mapping Status: {mappedCabinet ? 'Mapped' : 'No mapping'}</div>
-              {currentWindowId && <div>Mapped Cabinet ID: {windowCabinetMapping[currentWindowId] || 'None'}</div>}
-              <div>Environment: {process.env.NODE_ENV}</div>
-            </div>
-          </div>
-        )}
-
+      <div className="border-b border-gray-200 bg-white p-4">
         {/* Cabinet Info Section - Always Show */}
         <div
           className={cn(
             'mb-3 rounded-md p-3',
-            mappedCabinet
-              ? isLight
-                ? 'border border-blue-200 bg-blue-50'
-                : 'border border-blue-700 bg-blue-900'
-              : isLight
-                ? 'border border-gray-200 bg-gray-50'
-                : 'border border-gray-600 bg-gray-800',
+            mappedCabinet ? 'border border-blue-200 bg-blue-50' : 'border border-gray-200 bg-gray-50',
           )}>
-          <div
-            className={cn(
-              'mb-2 text-xs font-medium',
-              mappedCabinet
-                ? isLight
-                  ? 'text-blue-800'
-                  : 'text-blue-200'
-                : isLight
-                  ? 'text-gray-700'
-                  : 'text-gray-300',
-            )}>
+          <div className={cn('mb-2 text-xs font-medium', mappedCabinet ? 'text-blue-800' : 'text-gray-700')}>
             Current Cabinet
           </div>
 
-          <div
-            className={cn(
-              'mb-1 text-sm font-semibold',
-              mappedCabinet
-                ? isLight
-                  ? 'text-blue-900'
-                  : 'text-blue-100'
-                : isLight
-                  ? 'text-gray-600'
-                  : 'text-gray-400',
-            )}>
+          <div className={cn('mb-1 text-sm font-semibold', mappedCabinet ? 'text-blue-900' : 'text-gray-600')}>
             {mappedCabinet ? mappedCabinet.name : 'Untitled'}
           </div>
 
           {mappedCabinet && (
             <>
-              <div className={cn('mb-2 font-mono text-xs', isLight ? 'text-blue-600' : 'text-blue-400')}>
-                ID: {mappedCabinet.id}
-              </div>
+              <div className="mb-2 font-mono text-xs text-blue-600">ID: {mappedCabinet.id}</div>
 
               {mappedCabinet.description && (
-                <div className={cn('mb-2 text-xs', isLight ? 'text-blue-700' : 'text-blue-300')}>
-                  {mappedCabinet.description}
-                </div>
+                <div className="mb-2 text-xs text-blue-700">{mappedCabinet.description}</div>
               )}
 
-              <div className={cn('space-y-1 text-xs', isLight ? 'text-blue-600' : 'text-blue-400')}>
+              <div className="space-y-1 text-xs text-blue-600">
                 <div>Tabs: {mappedCabinet.tabs.length}</div>
                 <div>Created: {new Date(mappedCabinet.createdAt).toLocaleDateString()}</div>
                 <div>Updated: {new Date(mappedCabinet.updatedAt).toLocaleDateString()}</div>
                 {mappedCabinet.tags && mappedCabinet.tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1">
                     {mappedCabinet.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className={cn(
-                          'rounded-full px-2 py-0.5 text-xs',
-                          isLight ? 'bg-blue-100 text-blue-800' : 'bg-blue-800 text-blue-200',
-                        )}>
+                      <span key={index} className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800">
                         {tag}
                       </span>
                     ))}
@@ -394,11 +312,7 @@ const CabinetInfo = () => {
           disabled={saving}
           className={cn(
             'w-full rounded-md px-4 py-2 text-sm font-medium transition-colors',
-            saving
-              ? 'cursor-not-allowed bg-gray-400 text-gray-200'
-              : isLight
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-blue-500 text-white hover:bg-blue-600',
+            saving ? 'cursor-not-allowed bg-gray-400 text-gray-200' : 'bg-blue-600 text-white hover:bg-blue-700',
           )}>
           {saving
             ? mappedCabinet
@@ -410,13 +324,7 @@ const CabinetInfo = () => {
         </button>
 
         {successMessage && (
-          <div
-            className={cn(
-              'mt-2 rounded-md p-2 text-xs',
-              isLight
-                ? 'border border-green-200 bg-green-100 text-green-800'
-                : 'border border-green-700 bg-green-900 text-green-200',
-            )}>
+          <div className="mt-2 rounded-md border border-green-200 bg-green-100 p-2 text-xs text-green-800">
             {successMessage}
           </div>
         )}
@@ -426,7 +334,6 @@ const CabinetInfo = () => {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSave={handleSaveCabinet}
-        isLight={isLight}
         existingCabinet={mappedCabinet}
       />
     </>
