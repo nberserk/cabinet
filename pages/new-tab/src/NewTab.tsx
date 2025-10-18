@@ -130,7 +130,11 @@ const CabinetCard = ({
         </div>
       </div>
 
-      <div className="mb-3 grid grid-cols-2 gap-4 text-xs">
+      <div className="mb-3 grid grid-cols-1 gap-1 text-xs">
+        <div>
+          <span className="font-medium text-gray-700">ID:</span>
+          <span className="ml-1 text-gray-600">{cabinet.id}</span>
+        </div>
         <div>
           <span className="font-medium text-gray-700">Created:</span>
           <span className="ml-1 text-gray-600">{formatDate(cabinet.createdAt)}</span>
@@ -139,19 +143,19 @@ const CabinetCard = ({
           <span className="font-medium text-gray-700">Updated:</span>
           <span className="ml-1 text-gray-600">{formatDate(cabinet.updatedAt)}</span>
         </div>
-      </div>
-
-      {cabinet.tags && cabinet.tags.length > 0 && (
-        <div className="mb-3">
-          <div className="flex flex-wrap gap-1">
-            {cabinet.tags.map((tag, index) => (
-              <span key={index} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
-                {tag}
-              </span>
-            ))}
-          </div>
+        <div>
+          <span className="gap-4 font-medium text-gray-700">Tags:</span>
+          {cabinet.tags && cabinet.tags.length > 0 && (
+            <span className="ml-1 gap-1 text-gray-600">
+              {cabinet.tags.map((tag, index) => (
+                <span key={index} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
+                  {tag}
+                </span>
+              ))}
+            </span>
+          )}
         </div>
-      )}
+      </div>
 
       <div className="border-t border-gray-200 pt-3">
         <div className="mb-2 text-sm font-medium text-gray-700">Tabs ({cabinet.tabs.length})</div>
