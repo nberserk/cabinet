@@ -1,5 +1,5 @@
 import 'webextension-polyfill';
-import { exampleThemeStorage, cabinetStorage } from '@extension/storage';
+import { exampleThemeStorage } from '@extension/storage';
 import type { Cabinet } from '@extension/shared';
 
 exampleThemeStorage.get().then(theme => {
@@ -34,7 +34,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Handle cabinet restoration requests
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'restoreCabinet') {
     restoreCabinet(request.cabinet)
       .then(() => sendResponse({ success: true }))
@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   return false; // Don't keep channel open for other messages
 });
 
-async function restoreCabinet(cabinet: Cabinet): Promise<void> {
+const restoreCabinet = async (cabinet: Cabinet): Promise<void> => {
   try {
     // Create new window with the first tab
     const firstTab = cabinet.tabs[0];
@@ -54,7 +54,7 @@ async function restoreCabinet(cabinet: Cabinet): Promise<void> {
 
     const newWindow = await chrome.windows.create({
       url: firstTab.url,
-      focused: true
+      focused: true,
     });
 
     if (!newWindow.id) {
@@ -62,13 +62,13 @@ async function restoreCabinet(cabinet: Cabinet): Promise<void> {
     }
 
     // Create remaining tabs
-    const tabPromises = cabinet.tabs.slice(1).map(async (tab) => {
-      return chrome.tabs.create({
+    const tabPromises = cabinet.tabs.slice(1).map(async tab =>
+      chrome.tabs.create({
         windowId: newWindow.id,
         url: tab.url,
-        active: false
-      });
-    });
+        active: false,
+      }),
+    );
 
     await Promise.all(tabPromises);
 
@@ -84,4 +84,4 @@ async function restoreCabinet(cabinet: Cabinet): Promise<void> {
     console.error('Failed to restore cabinet:', error);
     throw error;
   }
-}
+};
