@@ -266,47 +266,18 @@ const CabinetInfo = () => {
 
   return (
     <>
-      <div className="border-b border-gray-200 bg-white p-4">
-        {/* Cabinet Info Section - Always Show */}
-        <div
-          className={cn(
-            'mb-3 rounded-md p-3',
-            mappedCabinet ? 'border border-blue-200 bg-blue-50' : 'border border-gray-200 bg-gray-50',
-          )}>
-          <div className={cn('mb-2 text-xs font-medium', mappedCabinet ? 'text-blue-800' : 'text-gray-700')}>
-            Current Cabinet
-          </div>
-
-          <div className={cn('mb-1 text-sm font-semibold', mappedCabinet ? 'text-blue-900' : 'text-gray-600')}>
-            {mappedCabinet ? mappedCabinet.name : 'Untitled'}
-          </div>
-
+      <div className={cn('mb-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-left')}>
+        Cabinet Section:
+        <div>
           {mappedCabinet && (
-            <>
-              <div className="mb-2 font-mono text-xs text-blue-600">ID: {mappedCabinet.id}</div>
-
-              {mappedCabinet.description && (
-                <div className="mb-2 text-xs text-blue-700">{mappedCabinet.description}</div>
-              )}
-
-              <div className="space-y-1 text-xs text-blue-600">
-                <div>Tabs: {mappedCabinet.tabs.length}</div>
-                <div>Created: {new Date(mappedCabinet.createdAt).toLocaleDateString()}</div>
-                <div>Updated: {new Date(mappedCabinet.updatedAt).toLocaleDateString()}</div>
-                {mappedCabinet.tags && mappedCabinet.tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {mappedCabinet.tags.map((tag, index) => (
-                      <span key={index} className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-800">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
+            <div className="grid grid-cols-1 gap-4 text-xs">
+              <div>
+                <span className="font-medium text-blue-800">Linked Cabinet:</span>
+                <span className="ml-1 text-blue-600">{mappedCabinet.name}</span>
               </div>
-            </>
+            </div>
           )}
         </div>
-
         <button
           onClick={() => setShowModal(true)}
           disabled={saving}
@@ -322,7 +293,6 @@ const CabinetInfo = () => {
               ? 'Update Cabinet'
               : 'Save Cabinet'}
         </button>
-
         {successMessage && (
           <div className="mt-2 rounded-md border border-green-200 bg-green-100 p-2 text-xs text-green-800">
             {successMessage}
