@@ -24,7 +24,6 @@ const manifest = {
   name: '__MSG_extensionName__',
   version: packageJson.version,
   description: '__MSG_extensionDescription__',
-  host_permissions: ['<all_urls>'],
   permissions: ['storage', 'tabs', 'sidePanel'],
   options_page: 'options/index.html',
   background: {
