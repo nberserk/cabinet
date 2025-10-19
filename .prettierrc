@@ -6,6 +6,8 @@
   "printWidth": 120,
   "bracketSameLine": true,
   "htmlWhitespaceSensitivity": "strict",
+  "tabWidth": 2,
+  "useTabs": false,
   "plugins": [
     "prettier-plugin-tailwindcss"
   ]
