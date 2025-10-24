@@ -1,6 +1,6 @@
 {
   "name": "cabinet",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Professional tab management Chrome extension. Save and restore complete tab structures as Cabinet.",
   "license": "MIT",
   "private": true,
