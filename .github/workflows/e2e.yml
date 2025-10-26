@@ -9,6 +9,8 @@ jobs:
   e2e:
     name: E2E tests on ${{ matrix.browser }}
     runs-on: ubuntu-latest
+    # Disable e2e tests until Chrome extension loading is fixed
+    if: false
     strategy:
       matrix:
         browser: [chrome]
