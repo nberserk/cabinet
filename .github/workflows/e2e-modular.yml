@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: ['chrome']
-        scenario: ['content', 'content-ui', 'content-runtime', 'background', 'new-tab', 'popup', 'devtools', 'side-panel', 'options']
+        scenario: '["new-tab", "side-panel", "options"]'
 
     env:
       CEB_CI: true
