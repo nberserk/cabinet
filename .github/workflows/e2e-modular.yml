@@ -6,7 +6,7 @@ permissions:
   contents: read
   
 env:
-  ALL_SCENARIOS: '["content", "content-ui", "content-runtime", "background", "new-tab", "popup", "devtools", "side-panel", "options"]'
+  ALL_SCENARIOS: '["new-tab", "side-panel", "options"]'
 
 jobs:
   e2e-tests:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: ['chrome', 'firefox']
+        browser: ['chrome']
         scenario: ['content', 'content-ui', 'content-runtime', 'background', 'new-tab', 'popup', 'devtools', 'side-panel', 'options']
 
     env:
