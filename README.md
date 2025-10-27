@@ -20,7 +20,10 @@
 
 ## Intro
 
-The Cabinet is a Chrome extension for professional tab management that visualizes browser tabs in hierarchical tree structures. Each window's tab relationships are organized into a "Cabinet" - a complete snapshot of your tab hierarchy that can be saved to local storage and restored at any time, preserving the exact parent-child relationships between tabs.
+The Cabinet is a Chrome extension for professional tab management that visualizes browser tabs in hierarchical tree structures. Each window's tab relationships are organized into a "Cabinet" - a complete snapshot of your tab hierarchy that can be saved to local storage and restored at any time, preserving the exact parent-child relationships between tabs. 
+
+- Chrome extension store: https://chromewebstore.google.com/detail/the-cabinet/nbjahnhlcipfoeggjejmbgabmdoiaohj
+
 
 ## Features
 
