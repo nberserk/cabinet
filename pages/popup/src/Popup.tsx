@@ -13,7 +13,7 @@ const notificationOptions = {
 
 const Popup = () => {
   const { isLight } = useStorage(exampleThemeStorage);
-  const logo = isLight ? 'popup/logo_vertical.svg' : 'popup/logo_vertical_dark.svg';
+  const logo = isLight ? 'popup/cabinet_logo_vertical.svg' : 'popup/cabinet_logo_vertical_dark.svg';
 
   const goGithubSite = () => chrome.tabs.create(PROJECT_URL_OBJECT);
 

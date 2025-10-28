@@ -7,7 +7,9 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 const Panel = () => {
   const { isLight } = useStorage(exampleThemeStorage);
-  const logo = isLight ? 'devtools-panel/logo_horizontal.svg' : 'devtools-panel/logo_horizontal_dark.svg';
+  const logo = isLight
+    ? 'devtools-panel/cabinet_logo_horizontal.svg'
+    : 'devtools-panel/cabinet_logo_horizontal_dark.svg';
 
   const goGithubSite = () => chrome.tabs.create(PROJECT_URL_OBJECT);
 

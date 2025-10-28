@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="cabinet_icon_dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <style>
+      .cabinet-body { fill: #4a5568; stroke: #718096; stroke-width: 2; }
+      .cabinet-door { fill: #2d3748; stroke: #4a5568; stroke-width: 1.5; }
+      .cabinet-handle { fill: #e2e8f0; stroke: #f7fafc; stroke-width: 1; }
+      .cabinet-shadow { fill: #000000; opacity: 0.4; }
+      .tab-icon { fill: #63b3ed; }
+      .tab-bg { fill: #2a4365; stroke: #63b3ed; stroke-width: 1; }
+    </style>
+  </defs>
+  
+  <!-- Cabinet Shadow -->
+  <ellipse class="cabinet-shadow" cx="60" cy="105" rx="35" ry="6"/>
+  
+  <!-- Main Cabinet Body -->
+  <rect class="cabinet-body" x="25" y="35" width="70" height="55" rx="4"/>
+  
+  <!-- Cabinet Doors -->
+  <rect class="cabinet-door" x="30" y="40" width="30" height="45" rx="2"/>
+  <rect class="cabinet-door" x="65" y="40" width="25" height="45" rx="2"/>
+  
+  <!-- Door Handles -->
+  <circle class="cabinet-handle" cx="55" cy="62" r="2.5"/>
+  <circle class="cabinet-handle" cx="70" cy="62" r="2.5"/>
+  
+  <!-- Cabinet Shelves -->
+  <line x1="30" y1="55" x2="90" y2="55" stroke="#718096" stroke-width="0.5" opacity="0.7"/>
+  <line x1="30" y1="70" x2="90" y2="70" stroke="#718096" stroke-width="0.5" opacity="0.7"/>
+  
+  <!-- Small tab icons emerging -->
+  <rect class="tab-bg" x="95" y="20" width="18" height="12" rx="1.5"/>
+  <circle class="tab-icon" cx="99" cy="26" r="1.5"/>
+  <rect class="tab-icon" x="102" y="24.5" width="9" height="1" rx="0.5"/>
+  <rect class="tab-icon" x="102" y="27" width="6" height="1" rx="0.5"/>
+  
+  <rect class="tab-bg" x="100" y="35" width="18" height="12" rx="1.5"/>
+  <circle class="tab-icon" cx="104" cy="41" r="1.5"/>
+  <rect class="tab-icon" x="107" y="39.5" width="9" height="1" rx="0.5"/>
+  <rect class="tab-icon" x="107" y="42" width="6" height="1" rx="0.5"/>
+  
+  <!-- Connecting lines -->
+  <path d="M90 50 Q95 45 95 32" stroke="#63b3ed" stroke-width="1" fill="none" opacity="0.8"/>
+  <path d="M90 60 Q95 55 100 47" stroke="#63b3ed" stroke-width="1" fill="none" opacity="0.8"/>
+</svg>
