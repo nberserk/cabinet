@@ -1,20 +1,25 @@
 import '@src/NewTab.css';
 import '@src/NewTab.scss';
 import { withErrorBoundary, withSuspense, useStorage } from '@extension/shared';
-import { cabinetStorage } from '@extension/storage';
-import { ErrorDisplay, LoadingSpinner } from '@extension/ui';
+import { cabinetStorage, exampleThemeStorage } from '@extension/storage';
+import { ErrorDisplay, LoadingSpinner, ToggleButton, cn } from '@extension/ui';
 import { useState, useMemo } from 'react';
 import type { Cabinet, TabUI } from '@extension/shared';
 
 type SortOption = 'createdDate' | 'alphabetical' | 'updatedDate';
 
-const TabItem = ({ tab }: { tab: TabUI }) => {
+const TabItem = ({ tab, isLight }: { tab: TabUI; isLight: boolean }) => {
   const indentStyle = {
     paddingLeft: `${tab.level * 20 + 12}px`,
   };
 
   return (
-    <div className="flex items-center border-l-4 border-transparent p-1 text-xs text-gray-700" style={indentStyle}>
+    <div
+      className={cn(
+        'flex items-center border-l-4 border-transparent p-1 text-xs',
+        isLight ? 'text-gray-700' : 'text-gray-300',
+      )}
+      style={indentStyle}>
       {tab.favIconUrl ? (
         <img
           src={tab.favIconUrl}
@@ -25,7 +30,11 @@ const TabItem = ({ tab }: { tab: TabUI }) => {
           }}
         />
       ) : (
-        <div className="mr-2 flex h-3 w-3 flex-shrink-0 items-center justify-center rounded-sm bg-blue-100 text-xs text-blue-600">
+        <div
+          className={cn(
+            'mr-2 flex h-3 w-3 flex-shrink-0 items-center justify-center rounded-sm text-xs',
+            isLight ? 'bg-blue-100 text-blue-600' : 'bg-blue-900 text-blue-300',
+          )}>
           🌐
         </div>
       )}
@@ -40,10 +49,12 @@ const CabinetCard = ({
   cabinet,
   onRestore,
   onDelete,
+  isLight,
 }: {
   cabinet: Cabinet;
   onRestore: (cabinet: Cabinet) => void;
   onDelete: (cabinet: Cabinet) => void;
+  isLight: boolean;
 }) => {
   // Build tab hierarchy for display using TabUI
   const tabHierarchy = useMemo(() => {
@@ -109,11 +120,19 @@ const CabinetCard = ({
     });
 
   return (
-    <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div
+      className={cn(
+        'mb-4 rounded-lg border p-4 shadow-sm',
+        isLight ? 'border-gray-200 bg-white' : 'border-gray-700 bg-gray-800',
+      )}>
       <div className="mb-3 flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="mb-1 text-lg font-semibold text-gray-900">{cabinet.name}</h3>
-          {cabinet.description && <p className="mb-2 text-sm text-gray-600">{cabinet.description}</p>}
+          <h3 className={cn('mb-1 text-lg font-semibold', isLight ? 'text-gray-900' : 'text-gray-100')}>
+            {cabinet.name}
+          </h3>
+          {cabinet.description && (
+            <p className={cn('mb-2 text-sm', isLight ? 'text-gray-600' : 'text-gray-400')}>{cabinet.description}</p>
+          )}
         </div>
         <div className="flex gap-2">
           <button
@@ -132,23 +151,32 @@ const CabinetCard = ({
 
       <div className="mb-3 grid grid-cols-1 gap-1 text-xs">
         <div>
-          <span className="font-medium text-gray-700">ID:</span>
-          <span className="ml-1 text-gray-600">{cabinet.id}</span>
+          <span className={cn('font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>ID:</span>
+          <span className={cn('ml-1', isLight ? 'text-gray-600' : 'text-gray-400')}>{cabinet.id}</span>
         </div>
         <div>
-          <span className="font-medium text-gray-700">Created:</span>
-          <span className="ml-1 text-gray-600">{formatDate(cabinet.createdAt)}</span>
+          <span className={cn('font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>Created:</span>
+          <span className={cn('ml-1', isLight ? 'text-gray-600' : 'text-gray-400')}>
+            {formatDate(cabinet.createdAt)}
+          </span>
         </div>
         <div>
-          <span className="font-medium text-gray-700">Updated:</span>
-          <span className="ml-1 text-gray-600">{formatDate(cabinet.updatedAt)}</span>
+          <span className={cn('font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>Updated:</span>
+          <span className={cn('ml-1', isLight ? 'text-gray-600' : 'text-gray-400')}>
+            {formatDate(cabinet.updatedAt)}
+          </span>
         </div>
         <div>
-          <span className="gap-4 font-medium text-gray-700">Tags:</span>
+          <span className={cn('gap-4 font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>Tags:</span>
           {cabinet.tags && cabinet.tags.length > 0 && (
-            <span className="ml-1 gap-1 text-gray-600">
+            <span className={cn('ml-1 gap-1', isLight ? 'text-gray-600' : 'text-gray-400')}>
               {cabinet.tags.map((tag, index) => (
-                <span key={index} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700">
+                <span
+                  key={index}
+                  className={cn(
+                    'rounded-full px-2 py-1 text-xs',
+                    isLight ? 'bg-gray-100 text-gray-700' : 'bg-gray-700 text-gray-300',
+                  )}>
                   {tag}
                 </span>
               ))}
@@ -157,14 +185,18 @@ const CabinetCard = ({
         </div>
       </div>
 
-      <div className="border-t border-gray-200 pt-3">
-        <div className="mb-2 text-sm font-medium text-gray-700">Tabs ({cabinet.tabs.length})</div>
+      <div className={cn('border-t pt-3', isLight ? 'border-gray-200' : 'border-gray-700')}>
+        <div className={cn('mb-2 text-sm font-medium', isLight ? 'text-gray-700' : 'text-gray-300')}>
+          Tabs ({cabinet.tabs.length})
+        </div>
         <div className="max-h-48 overflow-y-auto">
           {tabHierarchy.slice(0, 10).map(tab => (
-            <TabItem key={tab.id} tab={tab} />
+            <TabItem key={tab.id} tab={tab} isLight={isLight} />
           ))}
           {tabHierarchy.length > 10 && (
-            <div className="py-2 text-center text-xs text-gray-500">... and {tabHierarchy.length - 10} more tabs</div>
+            <div className={cn('py-2 text-center text-xs', isLight ? 'text-gray-500' : 'text-gray-400')}>
+              ... and {tabHierarchy.length - 10} more tabs
+            </div>
           )}
         </div>
       </div>
@@ -174,6 +206,7 @@ const CabinetCard = ({
 
 const NewTab = () => {
   const cabinets = useStorage(cabinetStorage);
+  const { isLight } = useStorage(exampleThemeStorage);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('createdDate');
 
@@ -246,26 +279,38 @@ const NewTab = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={cn('min-h-screen', isLight ? 'bg-slate-50 text-gray-900' : 'bg-gray-800 text-gray-100')}>
       {/* Header Menu */}
-      <header className="border-b border-gray-200 bg-white px-6 py-4">
+      <header
+        className={cn('border-b px-6 py-4', isLight ? 'border-gray-200 bg-white' : 'border-gray-700 bg-gray-800')}>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">The Cabinet</h1>
+          <h1 className={cn('text-2xl font-bold', isLight ? 'text-gray-900' : 'text-gray-100')}>The Cabinet</h1>
           <div className="flex items-center gap-4">
             <button
               onClick={openOptions}
-              className="rounded-md px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900">
+              className={cn(
+                'rounded-md px-3 py-1 text-sm transition-colors',
+                isLight
+                  ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  : 'text-gray-400 hover:bg-gray-700 hover:text-gray-100',
+              )}>
               Options
             </button>
             <button
               onClick={openGitHub}
-              className="flex items-center gap-2 rounded-md px-3 py-1 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+              className={cn(
+                'flex items-center gap-2 rounded-md px-3 py-1 text-sm transition-colors',
+                isLight
+                  ? 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  : 'text-gray-400 hover:bg-gray-700 hover:text-gray-100',
+              )}
               title="View on GitHub">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
               </svg>
               GitHub
             </button>
+            <ToggleButton className="mt-0">Toggle Theme</ToggleButton>
           </div>
         </div>
       </header>
@@ -279,14 +324,22 @@ const NewTab = () => {
               placeholder="Search cabinets..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={cn(
+                'w-full rounded-lg border px-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500',
+                isLight
+                  ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  : 'border-gray-600 bg-gray-800 text-gray-100 placeholder-gray-400',
+              )}
             />
           </div>
           <div>
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as SortOption)}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+              className={cn(
+                'rounded-lg border px-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500',
+                isLight ? 'border-gray-300 bg-white text-gray-900' : 'border-gray-600 bg-gray-800 text-gray-100',
+              )}>
               <option value="createdDate">Sort by Created Date</option>
               <option value="updatedDate">Sort by Updated Date</option>
               <option value="alphabetical">Sort Alphabetically</option>
@@ -296,16 +349,22 @@ const NewTab = () => {
 
         {/* Cabinet List */}
         {filteredAndSortedCabinets.length === 0 ? (
-          <div className="py-12 text-center text-gray-500">
+          <div className={cn('py-12 text-center', isLight ? 'text-gray-500' : 'text-gray-400')}>
             {searchQuery.trim() ? 'No cabinets match your search.' : 'No cabinets saved yet.'}
           </div>
         ) : (
           <div>
-            <div className="mb-4 text-sm text-gray-600">
+            <div className={cn('mb-4 text-sm', isLight ? 'text-gray-600' : 'text-gray-400')}>
               {filteredAndSortedCabinets.length} cabinet{filteredAndSortedCabinets.length !== 1 ? 's' : ''}
             </div>
             {filteredAndSortedCabinets.map(cabinet => (
-              <CabinetCard key={cabinet.id} cabinet={cabinet} onRestore={handleRestore} onDelete={handleDelete} />
+              <CabinetCard
+                key={cabinet.id}
+                cabinet={cabinet}
+                onRestore={handleRestore}
+                onDelete={handleDelete}
+                isLight={isLight}
+              />
             ))}
           </div>
         )}
