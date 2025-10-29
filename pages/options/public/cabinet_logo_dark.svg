@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="cabinet_logo_dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <defs>
+    <style>
+      .cabinet-body { fill: #4a5568; stroke: #718096; stroke-width: 2; }
+      .cabinet-door { fill: #2d3748; stroke: #4a5568; stroke-width: 1.5; }
+      .cabinet-handle { fill: #e2e8f0; stroke: #f7fafc; stroke-width: 1; }
+      .cabinet-shadow { fill: #000000; opacity: 0.4; }
+      .text-primary { fill: #f7fafc; font-family: 'Arial', sans-serif; font-weight: bold; }
+      .text-secondary { fill: #e2e8f0; font-family: 'Arial', sans-serif; font-weight: normal; }
+      .tab-icon { fill: #63b3ed; }
+      .tab-bg { fill: #2a4365; stroke: #63b3ed; stroke-width: 1; }
+    </style>
+  </defs>
+  
+  <!-- Cabinet Shadow -->
+  <ellipse class="cabinet-shadow" cx="65" cy="105" rx="45" ry="8"/>
+  
+  <!-- Main Cabinet Body -->
+  <rect class="cabinet-body" x="20" y="30" width="90" height="70" rx="4"/>
+  
+  <!-- Cabinet Doors -->
+  <rect class="cabinet-door" x="25" y="35" width="38" height="60" rx="2"/>
+  <rect class="cabinet-door" x="67" y="35" width="38" height="60" rx="2"/>
+  
+  <!-- Door Handles -->
+  <circle class="cabinet-handle" cx="58" cy="65" r="3"/>
+  <circle class="cabinet-handle" cx="72" cy="65" r="3"/>
+  
+  <!-- Cabinet Shelves (visible through slight gaps) -->
+  <line x1="25" y1="55" x2="105" y2="55" stroke="#718096" stroke-width="0.5" opacity="0.7"/>
+  <line x1="25" y1="75" x2="105" y2="75" stroke="#718096" stroke-width="0.5" opacity="0.7"/>
+  
+  <!-- Tab Icons floating out of cabinet -->
+  <g transform="translate(115, 25)">
+    <!-- Tab 1 -->
+    <rect class="tab-bg" x="0" y="0" width="24" height="16" rx="2"/>
+    <circle class="tab-icon" cx="6" cy="8" r="2"/>
+    <rect class="tab-icon" x="10" y="6" width="12" height="1.5" rx="0.5"/>
+    <rect class="tab-icon" x="10" y="9" width="8" height="1.5" rx="0.5"/>
+    
+    <!-- Tab 2 -->
+    <rect class="tab-bg" x="8" y="12" width="24" height="16" rx="2"/>
+    <circle class="tab-icon" cx="14" cy="20" r="2"/>
+    <rect class="tab-icon" x="18" y="18" width="12" height="1.5" rx="0.5"/>
+    <rect class="tab-icon" x="18" y="21" width="8" height="1.5" rx="0.5"/>
+    
+    <!-- Tab 3 -->
+    <rect class="tab-bg" x="16" y="24" width="24" height="16" rx="2"/>
+    <circle class="tab-icon" cx="22" cy="32" r="2"/>
+    <rect class="tab-icon" x="26" y="30" width="12" height="1.5" rx="0.5"/>
+    <rect class="tab-icon" x="26" y="33" width="8" height="1.5" rx="0.5"/>
+  </g>
+  
+  <!-- Connecting lines (showing tabs coming from cabinet) -->
+  <path d="M105 45 Q110 40 115 35" stroke="#63b3ed" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M105 55 Q110 50 123 40" stroke="#63b3ed" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M105 65 Q110 60 131 52" stroke="#63b3ed" stroke-width="1.5" fill="none" opacity="0.8"/>
+  
+  <!-- Text -->
+  <text class="text-primary" x="170" y="45" font-size="28">The Cabinet</text>
+  <text class="text-secondary" x="170" y="65" font-size="14">Professional Tab Management</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="380" cy="25" r="3" fill="#63b3ed" opacity="0.4"/>
+  <circle cx="370" cy="35" r="2" fill="#63b3ed" opacity="0.6"/>
+  <circle cx="385" cy="40" r="1.5" fill="#63b3ed" opacity="0.8"/>
+</svg>
