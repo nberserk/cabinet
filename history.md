@@ -1,7 +1,8 @@
+## 1.1.3
+- 
 ## 1.1.2
 - add a new menu in NewTab page that links to a github page
 - applying theme on NewTab page
-- 
 
 ## 1.1.1 (2025.10.18)
 - new-tab now displays entire Cabinet stored
